@@ -1,6 +1,6 @@
 {
   "name": "simple-selector",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "An es6 class to replace default select inputs with easy to style HTML.",
   "main": "js/selector.js",
   "scripts": {
@@ -15,5 +15,8 @@
     "javascript"
   ],
   "author": "Emmanuel Davies",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@meteora-digital/template": "^1.0.1"
+  }
 }

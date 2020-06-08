@@ -1,4 +1,4 @@
-import Template from './template';
+import Template from '@meteora-digital/template';
 
 const nodeArray = require('./components/nodeArray');
 const relativeTarget = require('./components/relativeTarget');
