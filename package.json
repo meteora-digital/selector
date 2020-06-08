@@ -1,0 +1,22 @@
+{
+  "name": "simple-selector",
+  "version": "1.0.0",
+  "description": "An es6 class to replace default select inputs with easy to style HTML.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "select",
+    "input",
+    "es6",
+    "class",
+    "html",
+    "javascript"
+  ],
+  "author": "Emmanuel Davies",
+  "license": "MIT",
+  "dependencies": {
+    "np": "^6.2.4"
+  }
+}
