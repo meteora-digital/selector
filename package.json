@@ -2,9 +2,9 @@
   "name": "simple-selector",
   "version": "1.0.0",
   "description": "An es6 class to replace default select inputs with easy to style HTML.",
-  "main": "index.js",
+  "main": "js/selector.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No test specified\""
   },
   "keywords": [
     "select",

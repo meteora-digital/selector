@@ -1,0 +1,181 @@
+// ======================================
+// Settings =============================
+// ======================================
+
+// Main Select Colours
+$selector-color: $black;
+$selector-background-color: $white;
+$selector-border-color: rgba($black, .2);
+
+// Chevron Colour
+$selector-chevron-color: $black;
+
+// List Colours
+$selector-list-background-color: $white;
+$selector-list-border-color: rgba($black, .2);
+
+// Option Colours
+$selector-option-color: $black;
+$selector-option-background-color: $white;
+
+// Option Hover Colours
+$selector-option-color--hover: $black;
+$selector-option-background-color--hover: rgba($black, .1);
+
+// Option Active Colours
+$selector-option-color--active: $white;
+$selector-option-background-color--active: rgba($black, .6);
+
+// ======================================
+// Styles ===============================
+// ======================================
+
+.selector {
+	position: relative;
+	z-index: 100;
+	display: block;
+	float: left;
+	transition: z-index .3s ease;
+
+	+ select {
+		display: none;
+	}
+
+	&.js-active {
+		z-index: 150;
+
+		.selector {
+			&__header {
+				&:before {
+					transform: translate(50%, -30%) rotate(45deg) scale(-1);
+				}
+			}
+
+			&__list {
+				color: $selector-option-color;
+				transform: scaleY(1);
+			}
+		}
+	}
+
+	&.multiple {
+		.selector__option {
+			position: relative;
+			padding-right: 4rem!important;
+
+			&:before,
+			&:after {
+				content: '';
+				position: absolute;
+				top: 50%;
+				right: 2rem;
+				height: 1.4rem;
+				width: 1.4rem;
+				border-radius: 50%;
+				opacity: .8;
+			}
+
+			&:before {
+				border: .1rem solid $selector-option-color;
+				transition: border-color .2s ease;
+				transform: translate(50%,-50%);
+			}
+
+			&:after {
+				background-color: transparent;
+				transition: background-color .2s ease;
+				transform: translate(50%,-50%) scale(0.5);
+			}
+
+			&--active {
+				&:before {
+					border-color: $selector-option-color--active;
+				}
+
+				&:after {
+					background-color: $selector-option-color--active;
+				}
+			}
+		}
+	}
+
+	&__header {
+		position: relative;
+		width: 32rem;
+		padding: 1rem 4rem 1rem 2rem;
+		border: .1rem solid $selector-border-color;
+		cursor: pointer;
+		background-color: $selector-background-color;
+
+		&:before {
+			content: '';
+			position: absolute;
+			top: 50%;
+			right: 2rem;
+			height: 1rem;
+			width: 1rem;
+			border-right: .2rem solid $selector-chevron-color;
+			border-bottom: .2rem solid $selector-chevron-color;
+			transform: translate(50%, -60%) rotate(45deg) scale(1);
+			transition: transform .3s ease;
+		}
+	}
+
+	&__placeholder {
+		color: $selector-color;
+		user-select: none;
+	}
+
+	&__search {
+		margin-bottom: 0!important;
+	}
+
+	&__searchInput {
+		margin-bottom: 0;
+		border: 0;
+		width: 100%;
+		padding: 1rem 2rem!important;
+	}
+
+	&__list {
+		display: block;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 100%;
+		padding: 0!important;
+		margin: 0;
+		color: transparent;
+		background-color: $selector-list-background-color;
+		border: .1rem solid $selector-list-border-color;
+		border-top: none;
+		transform: scaleY(0);
+		transform-origin: 50% 0;
+		transition: transform .2s ease;
+		max-height: 40rem;
+		overflow: auto;
+	}
+
+	&__option {
+		user-select: none;
+		cursor: pointer;
+		padding: 1rem 2rem!important;
+		margin-bottom: 0!important;
+		color: inherit;
+		background-color: $selector-option-background-color;
+		transition: background-color .1s ease, color .1s ease;
+
+		&:hover {
+			color: $selector-option-color--hover;
+			background-color: $selector-option-background-color--hover;
+		}
+
+		&--active {
+			&,
+			&:hover {
+				color: $selector-option-color--active;
+				background-color: $selector-option-background-color--active;
+			}
+		}
+	}
+}
