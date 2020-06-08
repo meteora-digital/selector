@@ -15,8 +15,5 @@
     "javascript"
   ],
   "author": "Emmanuel Davies",
-  "license": "MIT",
-  "dependencies": {
-    "np": "^6.2.4"
-  }
+  "license": "MIT"
 }
