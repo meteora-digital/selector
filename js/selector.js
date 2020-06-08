@@ -4,7 +4,7 @@ const nodeArray = require('@meteora-digital/helpers/js/nodeArray');
 const relativeTarget = require('@meteora-digital/helpers/js/relativeTarget');
 const containsClass = require('@meteora-digital/helpers/js/containsClass');
 const objectAssign = require('@meteora-digital/helpers/js/objectAssign');
-const Event = require('@meteora-digital/helpers/js/Event');
+const Event = require('@meteora-digital/helpers/js/customEvent');
 
 // Class
 
