@@ -15,17 +15,32 @@ yarn add simple-selector
 ```es6
 import Selector from 'simple-selector';
 
-const SimpleSelector = new Selector(document.querySelectorAll('.js-select'), {
+const select = document.querySelectorAll('.js-select');
+
+const SimpleSelector = new Selector(select, {
     search: true, 
     placeholder: 'Select your favourite.',
 });
+
+select.addEventListener('change', () => {
+	console.log(SimpleSelector.value());
+});
+
+```
+
+## Update the options dynamically
+
+If the options in the default select have been updated dynamically, simply call
+
+```es6
+SimpleSelector.updateOptions();
 ```
 
 ## Options
 
 | Option | Type | Description |
 |--------|------|-------------|
-| search | Boolean or String (default: 'Search') | True / False to enable / disable - String will be true and change the placeholder text. |
+| search | Boolean or String (default: 'Search') | True / False to enable / disable String will be true and change the placeholder text. |
 | placeholder | String (default: 'Select') | Will update the default text on the Simple Selector |
 | multiple | Boolean (default: false) | Toogles the multiselect attribute |
 | autoClose | Boolean (default: true) | When multiple is false, autoClose: true will close the Selector when an option is clicked |
