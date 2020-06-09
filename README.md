@@ -12,6 +12,14 @@ yarn add simple-selector
 
 ## Usage
 
+```html
+<select name="my-select" id="MySelect" class="js-select">
+	<option value="1">View All</option>
+	<option value="2">Option 1</option>
+	<option value="3">Option 2</option>
+</select>
+```
+
 ```es6
 import Selector from 'simple-selector';
 
