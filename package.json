@@ -2,9 +2,9 @@
   "name": "simple-selector",
   "version": "1.0.9",
   "description": "An es6 class to replace default select inputs with easy to style HTML.",
-  "main": "js/selector.js",
+  "main": "dist/js/selector.js",
   "scripts": {
-    "test": "echo \"No test specified\""
+    "test": "echo \"Simple Selector\""
   },
   "keywords": [
     "select",
@@ -17,7 +17,14 @@
   "author": "Emmanuel Davies",
   "license": "MIT",
   "dependencies": {
-    "@meteora-digital/helpers": "^1.0.0",
-    "@meteora-digital/template": "^1.0.0"
+    "@meteora-digital/helpers": "^1.1.0",
+    "@meteora-digital/template": "^1.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-plumber": "^1.2.1"
   }
 }
