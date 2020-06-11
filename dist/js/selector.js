@@ -5,17 +5,12 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 import Template from '@meteora-digital/template';
-
-var nodeArray = require('@meteora-digital/helpers/dist/js/nodeArray');
-
-var relativeTarget = require('@meteora-digital/helpers/dist/js/relativeTarget');
-
-var containsClass = require('@meteora-digital/helpers/dist/js/containsClass');
-
-var objectAssign = require('@meteora-digital/helpers/dist/js/objectAssign');
-
-var Event = require('@meteora-digital/helpers/dist/js/customEvent'); // Class
-
+import { nodeArray, relativeTarget, containsClass, objectAssign, Event } from '@meteora-digital/helpers'; // const nodeArray = require('@meteora-digital/helpers/dist/js/nodeArray');
+// const relativeTarget = require('@meteora-digital/helpers/dist/js/relativeTarget');
+// const containsClass = require('@meteora-digital/helpers/dist/js/containsClass');
+// const objectAssign = require('@meteora-digital/helpers/dist/js/objectAssign');
+// const Event = require('@meteora-digital/helpers/dist/js/customEvent');
+// Class
 
 var Selector = /*#__PURE__*/function () {
   function Selector(select) {
