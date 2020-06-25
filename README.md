@@ -50,9 +50,20 @@ SimpleSelector.updateOptions();
 |--------|------|-------------|
 | search | Boolean or String (default: 'Search') | True / False to enable / disable String will be true and change the placeholder text. |
 | class | String (default: 'selector') | If you want more than one style of selector, you can change this class to suit your needs |
-| placeholder | String (default: take's the selects placeholder attribute, or defaults to 'Select') | Will update the default text on the Simple Selector |
+| placeholder | String (default: placeholder attribute or 'Select') | Will update the default text on the Simple Selector |
 | multiple | Boolean (default: false) | Toogles the multiselect attribute |
 | autoClose | Boolean (default: true) | When multiple is false, autoClose: true will close the Selector when an option is clicked |
+
+## Browser Support
+**Desktop:**
+Firefox 16+ ✓
+Chrome 15+ ✓  (Might work on earlier versions, but I couldn't test it.)
+Safari 5.1+ ✓
+IE 10+ ✓
+
+**Mobile:**
+Safari iOS 5.1+ ✓
+Chrome Mobile 47+ ✓
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
