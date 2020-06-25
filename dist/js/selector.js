@@ -28,7 +28,7 @@ var Selector = /*#__PURE__*/function () {
       placeholder: this["default"].select.getAttribute('placeholder') || 'Select',
       "class": 'selector',
       search: false,
-      multiple: false,
+      multiple: this["default"].select.getAttribute('multiple') != undefined || false,
       autoClose: true
     }, options);
     this.initialPlaceholder = this.settings.placeholder; // Render the new select box

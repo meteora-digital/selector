@@ -23,7 +23,7 @@ export default class Selector {
 			placeholder: this.default.select.getAttribute('placeholder') || 'Select',
 			class: 'selector',
 			search: false,
-			multiple: false,
+			multiple: (this.default.select.getAttribute('multiple') != undefined) || false,
 			autoClose: true,
 		}, options);
 
