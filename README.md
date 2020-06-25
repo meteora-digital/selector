@@ -57,13 +57,16 @@ SimpleSelector.updateOptions();
 ## Browser Support
 **Desktop:**
 Firefox 16+ ✓
-Chrome 15+ ✓  (Might work on earlier versions, but I couldn't test it.)
+Chrome 15+ ✓  
 Safari 5.1+ ✓
 IE 10+ ✓
 
 **Mobile:**
 Safari iOS 5.1+ ✓
 Chrome Mobile 47+ ✓
+
+**Note:**
+(Might work on earlier versions of chrome, but I couldn't test it.)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
