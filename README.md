@@ -54,6 +54,7 @@ SimpleSelector.updateOptions();
 | multiple | Boolean (default: false) | Toogles the multiselect attribute |
 | autoClose | Boolean (default: true) | When multiple is false, autoClose: true will close the Selector when an option is clicked |
 
+
 ## Browser Support
 **Desktop:**
 Firefox 16+ ✓
@@ -67,6 +68,7 @@ Chrome Mobile 47+ ✓
 
 **Note:**
 (Might work on earlier versions of chrome, but I couldn't test it.)
+
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
