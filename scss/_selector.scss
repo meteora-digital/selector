@@ -4,15 +4,20 @@
 
 // Main Select Colours
 $selector-color: $black;
-$selector-background-color: $white;
 $selector-border-color: rgba($black, .2);
+$selector-background-color: $white;
 
 // Chevron Colour
 $selector-chevron-color: $black;
 
 // List Colours
-$selector-list-background-color: $white;
 $selector-list-border-color: rgba($black, .2);
+$selector-list-background-color: $white;
+
+// List Colours
+$selector-search-color: $black;
+$selector-search-border-color: rgba($black, .2);
+$selector-search-background-color: $white;
 
 // Option Colours
 $selector-option-color: $black;
@@ -135,6 +140,9 @@ $selector-option-background-color--active: rgba($black, .6);
 		border: 0;
 		width: 100%;
 		padding: 1rem 2rem!important;
+		color: $selector-search-color;
+		border-color: $selector-search-border-color;
+		background-color: $selector-search-background-color;
 	}
 
 	&__list {

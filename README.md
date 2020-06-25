@@ -49,7 +49,8 @@ SimpleSelector.updateOptions();
 | Option | Type | Description |
 |--------|------|-------------|
 | search | Boolean or String (default: 'Search') | True / False to enable / disable String will be true and change the placeholder text. |
-| placeholder | String (default: 'Select') | Will update the default text on the Simple Selector |
+| class | String (default: 'selector') | If you want more than one style of selector, you can change this class to suit your needs |
+| placeholder | String (default: take's the selects placeholder attribute, or defaults to 'Select') | Will update the default text on the Simple Selector |
 | multiple | Boolean (default: false) | Toogles the multiselect attribute |
 | autoClose | Boolean (default: true) | When multiple is false, autoClose: true will close the Selector when an option is clicked |
 

@@ -20,7 +20,8 @@ export default class Selector {
 
 		// Gather the user's settings
 		this.settings = objectAssign({
-			placeholder: 'Select',
+			placeholder: this.default.select.getAttribute('placeholder') || 'Select',
+			class: 'selector',
 			search: false,
 			multiple: false,
 			autoClose: true,
@@ -31,22 +32,22 @@ export default class Selector {
 		// Render the new select box
 		this.faux = new Template({
 			tagName: 'div',
-			classList: 'selector',
+			classList: this.settings.class,
 			innerHTML: [
 				{
 					tagName: 'div',
-					classList: 'selector__header',
+					classList: `${this.settings.class}__header`,
 					innerHTML: [
 						{
 							tagName: 'span',
-							classList: 'selector__placeholder',
+							classList: `${this.settings.class}__placeholder`,
 							innerHTML: this.settings.placeholder,
 						}
 					]
 				},
 				{
 					tagName: 'ul',
-					classList: 'selector__list',
+					classList: `${this.settings.class}__list`,
 				}
 			]
 		});
@@ -56,9 +57,9 @@ export default class Selector {
 
 		// Initialise
 		this.select = this.faux.html;
-		this.header = this.select.querySelector('.selector__header');
-		this.placeholder = this.select.querySelector('.selector__placeholder');
-		this.list = this.select.querySelector('.selector__list');
+		this.header = this.select.querySelector(`.${this.settings.class}__header`);
+		this.placeholder = this.select.querySelector(`.${this.settings.class}__placeholder`);
+		this.list = this.select.querySelector(`.${this.settings.class}__list`);
 		this.options = [];
 		this.val = [];
 		this.changeEvent = Event('change');
@@ -71,17 +72,17 @@ export default class Selector {
 			// Create the template
 			let search = new Template({
 				tagName: 'li', 
-				classList: 'selector__search',
+				classList: `${this.settings.class}__search`,
 				innerHTML: [{
 					tagName: 'input',
-					classList: 'selector__searchInput',
+					classList: `${this.settings.class}__searchInput`,
 					placeholder: 'Search',
 				}],
 			});
 
 			// Initialise
 			this.search = search.html;
-			this.searchInput = this.search.querySelector('.selector__searchInput');
+			this.searchInput = this.search.querySelector(`.${this.settings.class}__searchInput`);
 
 			this.list.insertBefore(this.search, this.list.childNodes[0]);
 		};
@@ -106,7 +107,7 @@ export default class Selector {
 		this.default.options.forEach((option) => {
 			template = new Template({
 				tagName: 'li',
-				classList: 'selector__option',
+				classList: `${this.settings.class}__option`,
 				innerHTML: option.innerHTML,
 				dataset: {value: option.value},
 			});
@@ -124,28 +125,28 @@ export default class Selector {
 				// If we are using a multi-select
 				if (this.settings.multiple) {
 					// If our option has already been selected, deselect it
-					if (containsClass(option, 'selector__option--active')) {
-						option.classList.remove('selector__option--active');
+					if (containsClass(option, `${this.settings.class}__option--active`)) {
+						option.classList.remove(`${this.settings.class}__option--active`);
 						this.default.options[index].selected = false;
 					}
 					// Otherwise, select it
 					else {
-						option.classList.add('selector__option--active');
+						option.classList.add(`${this.settings.class}__option--active`);
 
 						// Select all appropriate options in the default select
 						this.options.forEach((customOption, customOptionIndex) =>{
-							this.default.options[customOptionIndex].selected = (containsClass(customOption, 'selector__option--active'));
+							this.default.options[customOptionIndex].selected = (containsClass(customOption, `${this.settings.class}__option--active`));
 						});
 					}
 				}
 				// Otherwise select the single option, then close the input
 				else {
 					selection = [];
-					if (! option.classList.contains('selector__option--active')) {
+					if (! option.classList.contains(`${this.settings.class}__option--active`)) {
 
 						// Toggle the active state to the option we just clicked
-						this.options.forEach((o) => o.classList.remove('selector__option--active'));
-						option.classList.add('selector__option--active');
+						this.options.forEach((o) => o.classList.remove(`${this.settings.class}__option--active`));
+						option.classList.add(`${this.settings.class}__option--active`);
 
 						// Loop default options and select the one's who's value matches our duplicate
 						this.default.options.forEach((defaultOption) => {
@@ -157,7 +158,7 @@ export default class Selector {
 				}
 
 				// Our selected items all in a nice list
-				selection = nodeArray(this.list.querySelectorAll('.selector__option--active'));
+				selection = nodeArray(this.list.querySelectorAll(`.${this.settings.class}__option--active`));
 
 				// Set the placeholder based on the selected items
 				if (selection.length >= 2) {
