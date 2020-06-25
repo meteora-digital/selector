@@ -57,7 +57,7 @@ SimpleSelector.updateOptions();
 ## Browser Support
 **Desktop:**
 Firefox 16+ ✓
-Chrome 15+ ✓  
+Chrome 15+ ✓
 Safari 5.1+ ✓
 IE 10+ ✓
 
