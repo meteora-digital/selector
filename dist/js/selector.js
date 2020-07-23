@@ -46,7 +46,7 @@ var Selector = /*#__PURE__*/function () {
         }]
       }, {
         tagName: 'ul',
-        classList: "".concat(this.settings["class"], "__list ss-list")
+        classList: "".concat(this.settings["class"], "__list unstyled")
       }]
     }); // Create the new template before the existing select
 
