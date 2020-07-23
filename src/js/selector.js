@@ -47,7 +47,7 @@ export default class Selector {
 				},
 				{
 					tagName: 'ul',
-					classList: `${this.settings.class}__list`,
+					classList: `${this.settings.class}__list ss-list`,
 				}
 			]
 		});
