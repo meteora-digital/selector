@@ -4,6 +4,7 @@ const { src, dest } = require('gulp');
 // Import Gulp plugins.
 const babel = require('gulp-babel');
 const plumber = require('gulp-plumber');
+const concat = require('gulp-concat');
 
 // Gulp 4 uses exported objects as its tasks. Here we only have a
 // single export that represents the default gulp task.
@@ -14,12 +15,13 @@ exports.default = function(done) {
     // Stop the process if an error is thrown.
     .pipe(plumber())
     // Transpile the JS code using Babel's preset-env.
+    .pipe(concat('selector.js'))
     .pipe(babel({
-      presets: [
-        ['@babel/env', {
-          modules: false
-        }]
-      ]
+    	presets: [
+    	['@babel/env', {
+    		modules: false
+    	}]
+    	]
     }))
     // Save each component as a separate file in dist.
     .pipe(dest('./dist/js'))

@@ -2,14 +2,6 @@ import Template from '@meteora-digital/template';
 
 import {nodeArray, relativeTarget, containsClass, objectAssign, Event} from '@meteora-digital/helpers';
 
-// const nodeArray = require('@meteora-digital/helpers/dist/js/nodeArray');
-// const relativeTarget = require('@meteora-digital/helpers/dist/js/relativeTarget');
-// const containsClass = require('@meteora-digital/helpers/dist/js/containsClass');
-// const objectAssign = require('@meteora-digital/helpers/dist/js/objectAssign');
-// const Event = require('@meteora-digital/helpers/dist/js/customEvent');
-
-// Class
-
 export default class Selector {
 	constructor(select, options = {}) {
 		// Grab the default select box info
