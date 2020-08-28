@@ -81,6 +81,7 @@ var Selector = /*#__PURE__*/function () {
     }
 
     this.events();
+    this.updateValue();
   }
 
   _createClass(Selector, [{
@@ -231,6 +232,22 @@ var Selector = /*#__PURE__*/function () {
     key: "change",
     value: function change() {
       this["default"].select.dispatchEvent(this.changeEvent);
+    }
+  }, {
+    key: "updateValue",
+    value: function updateValue() {
+      var selection = [];
+      this["default"].options.forEach(function (option) {
+        if (option.selected && option.value !== "") selection.push(option);
+      }); // Set the placeholder based on the selected items
+
+      if (selection.length >= 2) {
+        this.placeholder.innerHTML = 'Multiple selected';
+      } else if (selection.length === 1) {
+        this.placeholder.innerHTML = selection[0].innerHTML;
+      } else {
+        this.placeholder.innerHTML = this.settings.placeholder;
+      }
     }
   }]);
 

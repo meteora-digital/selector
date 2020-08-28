@@ -85,6 +85,8 @@ export default class Selector {
 		}
 
 		this.events();
+
+    this.updateValue();
 	}
 
 	updateOptions() {
@@ -229,6 +231,22 @@ export default class Selector {
 	change() {
 		this.default.select.dispatchEvent(this.changeEvent);
 	}
+
+  updateValue() {
+    let selection = [];
+    this.default.options.forEach((option) => {
+      if (option.selected && option.value !== "") selection.push(option);
+    });
+
+    // Set the placeholder based on the selected items
+    if (selection.length >= 2) {
+      this.placeholder.innerHTML = 'Multiple selected';
+    } else if (selection.length === 1) {
+      this.placeholder.innerHTML = selection[0].innerHTML;
+    } else {
+      this.placeholder.innerHTML = this.settings.placeholder;
+    }
+  }
 }
 
 // <select name="JobType" id="JobType" class="js-select">
