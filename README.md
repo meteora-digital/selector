@@ -23,7 +23,7 @@ yarn add simple-selector
 ```es6
 import Selector from 'simple-selector';
 
-const select = document.querySelectorAll('.js-select');
+const select = document.querySelector('.js-select');
 
 const SimpleSelector = new Selector(select, {
     search: true, 
