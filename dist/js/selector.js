@@ -238,9 +238,12 @@ var Selector = /*#__PURE__*/function () {
   }, {
     key: "updateValue",
     value: function updateValue() {
+      var _this4 = this;
+
       var selection = [];
-      this["default"].options.forEach(function (option) {
+      this["default"].options.forEach(function (option, index) {
         if (option.selected && option.value !== "") selection.push(option);
+        if (option.selected) _this4.options[index].classList.add("".concat(_this4.settings["class"], "__option--active"));
       }); // Set the placeholder based on the selected items
 
       if (selection.length >= 2) {
@@ -250,6 +253,12 @@ var Selector = /*#__PURE__*/function () {
       } else {
         this.placeholder.innerHTML = this.settings.placeholder;
       }
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      this.updateOptions();
+      this.updateValue();
     }
   }]);
 

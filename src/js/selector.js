@@ -237,8 +237,9 @@ export default class Selector {
 
   updateValue() {
     let selection = [];
-    this.default.options.forEach((option) => {
+    this.default.options.forEach((option, index) => {
       if (option.selected && option.value !== "") selection.push(option);
+      if (option.selected) this.options[index].classList.add(`${this.settings.class}__option--active`);
     });
 
     // Set the placeholder based on the selected items
@@ -249,6 +250,12 @@ export default class Selector {
     } else {
       this.placeholder.innerHTML = this.settings.placeholder;
     }
+  }
+
+
+  update() {
+    this.updateOptions();
+    this.updateValue();
   }
 }
 
