@@ -95,7 +95,9 @@ var Selector = /*#__PURE__*/function () {
       this.options.forEach(function (option) {
         return option.remove();
       });
-      this.options = []; // Gather our data from the <option>s
+      this.options = []; // Get new options
+
+      this["default"].options = nodeArray(this["default"].select.querySelectorAll('option')); // Gather our data from the <option>s
 
       this["default"].options.forEach(function (option) {
         template = new Template({
@@ -253,12 +255,12 @@ var Selector = /*#__PURE__*/function () {
 
   return Selector;
 }(); // <select name="JobType" id="JobType" class="js-select">
-// 	<option value="0">View All</option>
-// 	<option value="1">Full Time</option>
-// 	<option value="1">Part Time</option>
-// 	<option value="1">Fixed Term</option>
-// 	<option value="1">Contract</option>
-// 	<option value="1">Casual</option>
+//   <option value="0">View All</option>
+//   <option value="1">Full Time</option>
+//   <option value="1">Part Time</option>
+//   <option value="1">Fixed Term</option>
+//   <option value="1">Contract</option>
+//   <option value="1">Casual</option>
 // </select>
 // import Selector from './components/Selector';
 // nodeArray(document.querSelectorAll('select.js-select')).forEach((select) => new Selector(select));
