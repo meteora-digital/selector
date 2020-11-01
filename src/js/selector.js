@@ -252,7 +252,6 @@ export default class Selector {
     }
   }
 
-
   update() {
     this.updateOptions();
     this.updateValue();
