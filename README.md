@@ -57,36 +57,38 @@ SimpleSelector.update();
 ## SCSS Mixin - defaults
 
 ```scss
-@mixin simple-selector (
-  $min-width: 32rem,
-  $border-radius: 0,
-  $border-width: .1rem,
+.selector {
+  @include simple-selector (
+    $min-width: 32rem,
+    $border-radius: 0,
+    $border-width: .1rem,
 
-  $header-color: $black,
-  $header-border-color: rgba($black, .2),
-  $header-background-color: $white,
-  $header-padding: 1rem 4rem 1rem 2rem,
+    $header-color: $black,
+    $header-border-color: rgba($black, .2),
+    $header-background-color: $white,
+    $header-padding: 1rem 4rem 1rem 2rem,
 
-  $chevron-color: $black,
+    $chevron-color: $black,
 
-  $list-border-color: rgba($black, .2),
-  $list-background-color: $white,
-  $list-padding: 0,
+    $list-border-color: rgba($black, .2),
+    $list-background-color: $white,
+    $list-padding: 0,
 
-  $search-color: $black,
-  $search-border-color: rgba($black, .2),
-  $search-background-color: $white,
+    $search-color: $black,
+    $search-border-color: rgba($black, .2),
+    $search-background-color: $white,
 
-  $option-color: $black,
-  $option-background-color: $white,
-  $option-transition-speed: 0.3s,
+    $option-color: $black,
+    $option-background-color: $white,
+    $option-transition-speed: 0.3s,
 
-  $option-color--hover: $black,
-  $option-background-color--hover: rgba($black, .1),
+    $option-color--hover: $black,
+    $option-background-color--hover: rgba($black, .1),
 
-  $option-color--active: $white,
-  $option-background-color--active: rgba($black, .6),
-)
+    $option-color--active: $white,
+    $option-background-color--active: rgba($black, .6),
+  )
+}
 ```
 
 ## Browser Support
