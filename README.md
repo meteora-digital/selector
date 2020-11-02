@@ -31,7 +31,7 @@ const SimpleSelector = new Selector(select, {
 });
 
 select.addEventListener('change', () => {
-	console.log(SimpleSelector.value());
+	console.log(select.value, SimpleSelector.value());
 });
 
 ```
@@ -41,7 +41,7 @@ select.addEventListener('change', () => {
 If the options in the default select have been updated dynamically, simply call
 
 ```es6
-SimpleSelector.updateOptions();
+SimpleSelector.update();
 ```
 
 ## Options
@@ -54,6 +54,40 @@ SimpleSelector.updateOptions();
 | multiple | Boolean (default: false) | Toogles the multiselect attribute |
 | autoClose | Boolean (default: true) | When multiple is false, autoClose: true will close the Selector when an option is clicked |
 
+## SCSS Mixin - defaults
+
+```scss
+@mixin simple-selector (
+  $min-width: 32rem,
+  $border-radius: 0,
+  $border-width: .1rem,
+
+  $header-color: $black,
+  $header-border-color: rgba($black, .2),
+  $header-background-color: $white,
+  $header-padding: 1rem 4rem 1rem 2rem,
+
+  $chevron-color: $black,
+
+  $list-border-color: rgba($black, .2),
+  $list-background-color: $white,
+  $list-padding: 0,
+
+  $search-color: $black,
+  $search-border-color: rgba($black, .2),
+  $search-background-color: $white,
+
+  $option-color: $black,
+  $option-background-color: $white,
+  $option-transition-speed: 0.3s,
+
+  $option-color--hover: $black,
+  $option-background-color--hover: rgba($black, .1),
+
+  $option-color--active: $white,
+  $option-background-color--active: rgba($black, .6),
+)
+```
 
 ## Browser Support
 **Desktop:**
