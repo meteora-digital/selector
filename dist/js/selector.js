@@ -165,14 +165,7 @@ var Selector = /*#__PURE__*/function () {
 
           selection = nodeArray(_this.list.querySelectorAll(".".concat(_this.settings["class"], "__option--active"))); // Set the placeholder based on the selected items
 
-          if (selection.length >= 2) {
-            _this.placeholder.innerHTML = 'Multiple selected';
-          } else if (selection.length === 1) {
-            _this.placeholder.innerHTML = selection[0].innerHTML;
-          } else {
-            _this.placeholder.innerHTML = _this.settings.placeholder;
-            if (_this.settings.multiple && _this["default"].options[0].value === '') _this.options[0].classList.add("".concat(_this.settings["class"], "__option--active"));
-          } // Finally send a change function to the original select
+          _this.updatePlaceholder(selection); // Finally send a change function to the original select
 
 
           _this.change();
@@ -248,6 +241,19 @@ var Selector = /*#__PURE__*/function () {
     key: "change",
     value: function change() {
       this["default"].select.dispatchEvent(this.changeEvent);
+    } // Set the placeholder based on the selected items
+
+  }, {
+    key: "updatePlaceholder",
+    value: function updatePlaceholder(selection) {
+      if (selection.length >= 2) {
+        this.placeholder.innerHTML = 'Multiple selected';
+      } else if (selection.length === 1 && selection[0].getAttribute('data-value') != '') {
+        this.placeholder.innerHTML = selection[0].innerHTML;
+      } else {
+        this.placeholder.innerHTML = this.settings.placeholder;
+        if (this.settings.multiple && this["default"].options[0].value === '') this.options[0].classList.add("".concat(this.settings["class"], "__option--active"));
+      }
     }
   }, {
     key: "updateValue",
@@ -260,13 +266,7 @@ var Selector = /*#__PURE__*/function () {
         if (option.selected) _this4.options[index].classList.add("".concat(_this4.settings["class"], "__option--active"));
       }); // Set the placeholder based on the selected items
 
-      if (selection.length >= 2) {
-        this.placeholder.innerHTML = 'Multiple selected';
-      } else if (selection.length === 1) {
-        this.placeholder.innerHTML = selection[0].innerHTML;
-      } else {
-        this.placeholder.innerHTML = this.settings.placeholder;
-      }
+      this.updatePlaceholder(selection);
     }
   }, {
     key: "update",
@@ -278,12 +278,12 @@ var Selector = /*#__PURE__*/function () {
 
   return Selector;
 }(); // <select name="JobType" id="JobType" class="js-select">
-//   <option value="0">View All</option>
-//   <option value="1">Full Time</option>
-//   <option value="1">Part Time</option>
-//   <option value="1">Fixed Term</option>
-//   <option value="1">Contract</option>
-//   <option value="1">Casual</option>
+//	 <option value="0">View All</option>
+//	 <option value="1">Full Time</option>
+//	 <option value="1">Part Time</option>
+//	 <option value="1">Fixed Term</option>
+//	 <option value="1">Contract</option>
+//	 <option value="1">Casual</option>
 // </select>
 // import Selector from './components/Selector';
 // nodeArray(document.querSelectorAll('select.js-select')).forEach((select) => new Selector(select));
