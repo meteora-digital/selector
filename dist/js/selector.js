@@ -171,6 +171,7 @@ var Selector = /*#__PURE__*/function () {
             _this.placeholder.innerHTML = selection[0].innerHTML;
           } else {
             _this.placeholder.innerHTML = _this.settings.placeholder;
+            if (_this.settings.multiple && _this["default"].options[0].value === '') _this.options[0].classList.add("".concat(_this.settings["class"], "__option--active"));
           } // Finally send a change function to the original select
 
 

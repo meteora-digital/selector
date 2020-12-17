@@ -178,6 +178,7 @@ export default class Selector {
           this.placeholder.innerHTML = selection[0].innerHTML;
         } else {
           this.placeholder.innerHTML = this.settings.placeholder;
+          if (this.settings.multiple && this.default.options[0].value === '') this.options[0].classList.add(`${this.settings.class}__option--active`);
         }
 
         // Finally send a change function to the original select
