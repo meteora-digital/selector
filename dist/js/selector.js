@@ -117,18 +117,31 @@ var Selector = /*#__PURE__*/function () {
         option.addEventListener('click', function () {
           // If we are using a multi-select
           if (_this.settings.multiple) {
-            // If our option has already been selected, deselect it
-            if (containsClass(option, "".concat(_this.settings["class"], "__option--active"))) {
-              option.classList.remove("".concat(_this.settings["class"], "__option--active"));
-              _this["default"].options[index].selected = false;
-            } // Otherwise, select it
-            else {
-                option.classList.add("".concat(_this.settings["class"], "__option--active")); // Select all appropriate options in the default select
+            if (option.getAttribute('data-value') === '') {
+              // Clear all other options
+              _this.options.forEach(function (customOption, customOptionIndex) {
+                customOption.classList.remove("".concat(_this.settings["class"], "__option--active"));
+                _this["default"].options[customOptionIndex].selected = false;
+              }); // Select "all" option
 
-                _this.options.forEach(function (customOption, customOptionIndex) {
-                  _this["default"].options[customOptionIndex].selected = containsClass(customOption, "".concat(_this.settings["class"], "__option--active"));
-                });
-              }
+
+              option.classList.add("".concat(_this.settings["class"], "__option--active"));
+            } else {
+              // Clear the all option
+              if (_this["default"].options[0].value === '') _this.options[0].classList.remove("".concat(_this.settings["class"], "__option--active")); // If our option has already been selected, deselect it
+
+              if (containsClass(option, "".concat(_this.settings["class"], "__option--active"))) {
+                option.classList.remove("".concat(_this.settings["class"], "__option--active"));
+                _this["default"].options[index].selected = false;
+              } // Otherwise, select it
+              else {
+                  option.classList.add("".concat(_this.settings["class"], "__option--active")); // Select all appropriate options in the default select
+
+                  _this.options.forEach(function (customOption, customOptionIndex) {
+                    _this["default"].options[customOptionIndex].selected = containsClass(customOption, "".concat(_this.settings["class"], "__option--active"));
+                  });
+                }
+            }
           } // Otherwise select the single option, then close the input
           else {
               selection = [];

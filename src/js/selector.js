@@ -121,19 +121,33 @@ export default class Selector {
 
         // If we are using a multi-select
         if (this.settings.multiple) {
-          // If our option has already been selected, deselect it
-          if (containsClass(option, `${this.settings.class}__option--active`)) {
-            option.classList.remove(`${this.settings.class}__option--active`);
-            this.default.options[index].selected = false;
-          }
-          // Otherwise, select it
-          else {
-            option.classList.add(`${this.settings.class}__option--active`);
-
-            // Select all appropriate options in the default select
-            this.options.forEach((customOption, customOptionIndex) =>{
-              this.default.options[customOptionIndex].selected = (containsClass(customOption, `${this.settings.class}__option--active`));
+          if (option.getAttribute('data-value') === '') {
+            // Clear all other options
+            this.options.forEach((customOption, customOptionIndex) => {
+              customOption.classList.remove(`${this.settings.class}__option--active`);
+              this.default.options[customOptionIndex].selected = false;
             });
+
+            // Select "all" option
+            option.classList.add(`${this.settings.class}__option--active`);
+          }else {
+            // Clear the all option
+            if (this.default.options[0].value === '') this.options[0].classList.remove(`${this.settings.class}__option--active`);
+
+            // If our option has already been selected, deselect it
+            if (containsClass(option, `${this.settings.class}__option--active`)) {
+              option.classList.remove(`${this.settings.class}__option--active`);
+              this.default.options[index].selected = false;
+            }
+            // Otherwise, select it
+            else {
+              option.classList.add(`${this.settings.class}__option--active`);
+
+              // Select all appropriate options in the default select
+              this.options.forEach((customOption, customOptionIndex) =>{
+                this.default.options[customOptionIndex].selected = (containsClass(customOption, `${this.settings.class}__option--active`));
+              });
+            }
           }
         }
         // Otherwise select the single option, then close the input
