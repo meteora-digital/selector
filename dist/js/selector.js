@@ -248,7 +248,7 @@ var Selector = /*#__PURE__*/function () {
     value: function updatePlaceholder(selection) {
       if (selection.length >= 2) {
         this.placeholder.innerHTML = 'Multiple selected';
-      } else if (this.settings.multiple == false || selection.length === 1 && selection[0].getAttribute('data-value') != '') {
+      } else if (selection.length === 1 && selection[0].getAttribute('data-value') != '') {
         this.placeholder.innerHTML = selection[0].innerHTML;
       } else {
         this.placeholder.innerHTML = this.settings.placeholder;
