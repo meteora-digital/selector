@@ -1,11 +1,21 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _template = _interopRequireDefault(require("@meteora-digital/template"));
+
+var _helpers = require("@meteora-digital/helpers");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-import Template from '@meteora-digital/template';
-import { nodeArray, relativeTarget, containsClass, objectAssign, Event } from '@meteora-digital/helpers';
 
 var Selector = /*#__PURE__*/function () {
   function Selector(select) {
@@ -16,10 +26,10 @@ var Selector = /*#__PURE__*/function () {
     // Grab the default select box info
     this["default"] = {
       select: select,
-      options: nodeArray(select.querySelectorAll('option'))
+      options: (0, _helpers.nodeArray)(select.querySelectorAll('option'))
     }; // Gather the user's settings
 
-    this.settings = objectAssign({
+    this.settings = (0, _helpers.objectAssign)({
       placeholder: this["default"].select.getAttribute('placeholder') || 'Select',
       "class": 'selector',
       search: false,
@@ -28,7 +38,7 @@ var Selector = /*#__PURE__*/function () {
     }, options);
     this.initialPlaceholder = this.settings.placeholder; // Render the new select box
 
-    this.faux = new Template({
+    this.faux = new _template["default"]({
       tagName: 'div',
       classList: this.settings["class"],
       innerHTML: [{
@@ -53,12 +63,12 @@ var Selector = /*#__PURE__*/function () {
     this.list = this.select.querySelector(".".concat(this.settings["class"], "__list"));
     this.options = [];
     this.val = [];
-    this.changeEvent = Event('change');
+    this.changeEvent = (0, _helpers.Event)('change');
     this.updateOptions(); // Render the search input
 
     if (this.settings.search) {
       // Create the template
-      var search = new Template({
+      var search = new _template["default"]({
         tagName: 'li',
         classList: "".concat(this.settings["class"], "__search"),
         innerHTML: [{
@@ -97,10 +107,10 @@ var Selector = /*#__PURE__*/function () {
       });
       this.options = []; // Get new options
 
-      this["default"].options = nodeArray(this["default"].select.querySelectorAll('option')); // Gather our data from the <option>s
+      this["default"].options = (0, _helpers.nodeArray)(this["default"].select.querySelectorAll('option')); // Gather our data from the <option>s
 
       this["default"].options.forEach(function (option) {
-        template = new Template({
+        template = new _template["default"]({
           tagName: 'li',
           classList: "".concat(_this.settings["class"], "__option"),
           innerHTML: option.innerHTML,
@@ -130,7 +140,7 @@ var Selector = /*#__PURE__*/function () {
               // Clear the all option
               if (_this["default"].options[0].value === '') _this.options[0].classList.remove("".concat(_this.settings["class"], "__option--active")); // If our option has already been selected, deselect it
 
-              if (containsClass(option, "".concat(_this.settings["class"], "__option--active"))) {
+              if ((0, _helpers.containsClass)(option, "".concat(_this.settings["class"], "__option--active"))) {
                 option.classList.remove("".concat(_this.settings["class"], "__option--active"));
                 _this["default"].options[index].selected = false;
               } // Otherwise, select it
@@ -138,7 +148,7 @@ var Selector = /*#__PURE__*/function () {
                   option.classList.add("".concat(_this.settings["class"], "__option--active")); // Select all appropriate options in the default select
 
                   _this.options.forEach(function (customOption, customOptionIndex) {
-                    _this["default"].options[customOptionIndex].selected = containsClass(customOption, "".concat(_this.settings["class"], "__option--active"));
+                    _this["default"].options[customOptionIndex].selected = (0, _helpers.containsClass)(customOption, "".concat(_this.settings["class"], "__option--active"));
                   });
                 }
             }
@@ -163,7 +173,7 @@ var Selector = /*#__PURE__*/function () {
             } // Our selected items all in a nice list
 
 
-          selection = nodeArray(_this.list.querySelectorAll(".".concat(_this.settings["class"], "__option--active"))); // Set the placeholder based on the selected items
+          selection = (0, _helpers.nodeArray)(_this.list.querySelectorAll(".".concat(_this.settings["class"], "__option--active"))); // Set the placeholder based on the selected items
 
           _this.updatePlaceholder(selection); // Finally send a change function to the original select
 
@@ -181,11 +191,11 @@ var Selector = /*#__PURE__*/function () {
 
       // Open or close the select depending on the user's clicked target
       window.addEventListener('click', function (e) {
-        if (!relativeTarget(e.target, _this2.select)) _this2.close();
+        if (!(0, _helpers.relativeTarget)(e.target, _this2.select)) _this2.close();
       }); // If we click on the header, and the selector is already open, we assume the user is trying to close it
 
       this.header.addEventListener('click', function () {
-        containsClass(_this2.select, 'js-active') ? _this2.close() : _this2.open();
+        (0, _helpers.containsClass)(_this2.select, 'js-active') ? _this2.close() : _this2.open();
       }); // When search is enabled add the filter event
       // Note, the filter event can be used from outside this class
 
@@ -289,4 +299,4 @@ var Selector = /*#__PURE__*/function () {
 // nodeArray(document.querSelectorAll('select.js-select')).forEach((select) => new Selector(select));
 
 
-export { Selector as default };
+exports["default"] = Selector;
