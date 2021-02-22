@@ -273,7 +273,7 @@ var Selector = /*#__PURE__*/function () {
       var selection = [];
       this["default"].options.forEach(function (option, index) {
         if (option.selected && option.value !== "") selection.push(option);
-        if (option.selected) _this4.options[index].classList.add("".concat(_this4.settings["class"], "__option--active"));
+        option.selected ? _this4.options[index].classList.add("".concat(_this4.settings["class"], "__option--active")) : _this4.options[index].classList.remove("".concat(_this4.settings["class"], "__option--active"));
       }); // Set the placeholder based on the selected items
 
       this.updatePlaceholder(selection);

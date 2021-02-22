@@ -259,7 +259,7 @@ export default class Selector {
 		let selection = [];
 		this.default.options.forEach((option, index) => {
 			if (option.selected && option.value !== "") selection.push(option);
-			if (option.selected) this.options[index].classList.add(`${this.settings.class}__option--active`);
+			(option.selected) ? this.options[index].classList.add(`${this.settings.class}__option--active`) : this.options[index].classList.remove(`${this.settings.class}__option--active`);
 		});
 
 		// Set the placeholder based on the selected items
