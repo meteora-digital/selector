@@ -257,10 +257,16 @@ var Selector = /*#__PURE__*/function () {
     key: "updatePlaceholder",
     value: function updatePlaceholder(selection) {
       if (selection.length >= 2) {
+        this.placeholder.classList.add('multiple-selected');
+        this.placeholder.classList.remove('single-selected');
         this.placeholder.innerHTML = 'Multiple selected';
       } else if (selection.length === 1 && selection[0].getAttribute('data-value') != '') {
+        this.placeholder.classList.add('single-selected');
+        this.placeholder.classList.remove('multiple-selected');
         this.placeholder.innerHTML = selection[0].innerHTML;
       } else {
+        this.placeholder.classList.remove('multiple-selected');
+        this.placeholder.classList.remove('single-selected');
         this.placeholder.innerHTML = this.settings.placeholder;
         if (this.settings.multiple && this["default"].options[0].value === '') this.options[0].classList.add("".concat(this.settings["class"], "__option--active"));
       }
@@ -288,12 +294,12 @@ var Selector = /*#__PURE__*/function () {
 
   return Selector;
 }(); // <select name="JobType" id="JobType" class="js-select">
-//	 <option value="0">View All</option>
-//	 <option value="1">Full Time</option>
-//	 <option value="1">Part Time</option>
-//	 <option value="1">Fixed Term</option>
-//	 <option value="1">Contract</option>
-//	 <option value="1">Casual</option>
+//   <option value="0">View All</option>
+//   <option value="1">Full Time</option>
+//   <option value="1">Part Time</option>
+//   <option value="1">Fixed Term</option>
+//   <option value="1">Contract</option>
+//   <option value="1">Casual</option>
 // </select>
 // import Selector from './components/Selector';
 // nodeArray(document.querSelectorAll('select.js-select')).forEach((select) => new Selector(select));
