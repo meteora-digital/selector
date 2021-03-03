@@ -109,6 +109,13 @@ export default class Selector {
         dataset: {value: option.value},
       });
 
+      // Grab all the data attributes from the option and assign them to the new one
+      for (var i = 0; i < option.attributes.length; i++) {
+        if (option.attributes[i].nodeName.indexOf('data-') >= 0) {
+          template.html.setAttribute(option.attributes[i].nodeName, option.attributes[i].nodeValue);
+        }
+      }
+
       // Append the new options to the page
       this.options.push(template.html);
     });
@@ -246,16 +253,22 @@ export default class Selector {
   // Set the placeholder based on the selected items
   updatePlaceholder(selection) {
     if (selection.length >= 2) {
+      // Add a class to show multiple options are selected
       this.placeholder.classList.add('multiple-selected');
+      // Remove the class that shows one option is selected
       this.placeholder.classList.remove('single-selected');
       this.placeholder.innerHTML = 'Multiple selected';
     } else if (selection.length === 1 && selection[0].getAttribute('data-value') != '') {
+      // Add a class to shows one option is selected
       this.placeholder.classList.add('single-selected');
+      // Remove the class that shows multiple options are selected
       this.placeholder.classList.remove('multiple-selected');
       this.placeholder.innerHTML = selection[0].innerHTML;
     } else {
-      this.placeholder.classList.remove('multiple-selected');
+      // Remove the class that shows one option is selected
       this.placeholder.classList.remove('single-selected');
+      // Remove the class that shows multiple options are selected
+      this.placeholder.classList.remove('multiple-selected');
       this.placeholder.innerHTML = this.settings.placeholder;
       if (this.settings.multiple && this.default.options[0].value === '') this.options[0].classList.add(`${this.settings.class}__option--active`);
     }
