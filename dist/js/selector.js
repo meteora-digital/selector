@@ -116,7 +116,14 @@ var Selector = /*#__PURE__*/function () {
           dataset: {
             value: option.value
           }
-        }); // Append the new options to the page
+        }); // Grab all the data attributes from the option and assign them to the new one
+
+        for (var i = 0; i < option.attributes.length; i++) {
+          if (option.attributes[i].nodeName.indexOf('data-') >= 0) {
+            template.html.setAttribute(option.attributes[i].nodeName, option.attributes[i].nodeValue);
+          }
+        } // Append the new options to the page
+
 
         _this.options.push(template.html);
       }); // Create our event handlers and append the items to our list
@@ -198,11 +205,9 @@ var Selector = /*#__PURE__*/function () {
       }); // When search is enabled add the filter event
       // Note, the filter event can be used from outside this class
 
-      if (this.search) {
-        this.searchInput.addEventListener('keyup', function () {
-          return _this2.filter(_this2.searchInput.value);
-        });
-      }
+      if (this.search) this.searchInput.addEventListener('keyup', function () {
+        return _this2.filter(_this2.searchInput.value);
+      });
     }
   }, {
     key: "open",
@@ -256,10 +261,22 @@ var Selector = /*#__PURE__*/function () {
     key: "updatePlaceholder",
     value: function updatePlaceholder(selection) {
       if (selection.length >= 2) {
+        // Add a class to show multiple options are selected
+        this.placeholder.classList.add('multiple-selected'); // Remove the class that shows one option is selected
+
+        this.placeholder.classList.remove('single-selected');
         this.placeholder.innerHTML = 'Multiple selected';
       } else if (selection.length === 1 && selection[0].getAttribute('data-value') != '') {
+        // Add a class to shows one option is selected
+        this.placeholder.classList.add('single-selected'); // Remove the class that shows multiple options are selected
+
+        this.placeholder.classList.remove('multiple-selected');
         this.placeholder.innerHTML = selection[0].innerHTML;
       } else {
+        // Remove the class that shows one option is selected
+        this.placeholder.classList.remove('single-selected'); // Remove the class that shows multiple options are selected
+
+        this.placeholder.classList.remove('multiple-selected');
         this.placeholder.innerHTML = this.settings.placeholder;
         if (this.settings.multiple && this["default"].options[0].value === '') this.options[0].classList.add("".concat(this.settings["class"], "__option--active"));
       }
