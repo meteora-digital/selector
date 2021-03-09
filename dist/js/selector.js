@@ -35,8 +35,7 @@ var Selector = /*#__PURE__*/function () {
       search: false,
       multiple: this["default"].select.getAttribute('multiple') != undefined || false,
       autoClose: true
-    }, options);
-    this.initialPlaceholder = this.settings.placeholder; // Render the new select box
+    }, options); // Render the new select box
 
     this.faux = new _template["default"]({
       tagName: 'div',
@@ -103,7 +102,7 @@ var Selector = /*#__PURE__*/function () {
       var selection = []; // Empty the list
 
       this.options.forEach(function (option) {
-        return option.remove();
+        return option.parentNode.removeChild(option);
       });
       this.options = []; // Get new options
 
@@ -201,7 +200,7 @@ var Selector = /*#__PURE__*/function () {
 
       if (this.search) {
         this.searchInput.addEventListener('keyup', function () {
-          _this2.filter(_this2.searchInput.value);
+          return _this2.filter(_this2.searchInput.value);
         });
       }
     }
@@ -288,12 +287,12 @@ var Selector = /*#__PURE__*/function () {
 
   return Selector;
 }(); // <select name="JobType" id="JobType" class="js-select">
-//	 <option value="0">View All</option>
-//	 <option value="1">Full Time</option>
-//	 <option value="1">Part Time</option>
-//	 <option value="1">Fixed Term</option>
-//	 <option value="1">Contract</option>
-//	 <option value="1">Casual</option>
+//   <option value="0">View All</option>
+//   <option value="1">Full Time</option>
+//   <option value="1">Part Time</option>
+//   <option value="1">Fixed Term</option>
+//   <option value="1">Contract</option>
+//   <option value="1">Casual</option>
 // </select>
 // import Selector from './components/Selector';
 // nodeArray(document.querSelectorAll('select.js-select')).forEach((select) => new Selector(select));
