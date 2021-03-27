@@ -35,8 +35,7 @@ var Selector = /*#__PURE__*/function () {
       search: false,
       multiple: this["default"].select.getAttribute('multiple') != undefined || false,
       autoClose: true
-    }, options);
-    this.initialPlaceholder = this.settings.placeholder; // Render the new select box
+    }, options); // Render the new select box
 
     this.faux = new _template["default"]({
       tagName: 'div',
@@ -103,7 +102,7 @@ var Selector = /*#__PURE__*/function () {
       var selection = []; // Empty the list
 
       this.options.forEach(function (option) {
-        return option.remove();
+        return option.parentNode.removeChild(option);
       });
       this.options = []; // Get new options
 
@@ -206,11 +205,9 @@ var Selector = /*#__PURE__*/function () {
       }); // When search is enabled add the filter event
       // Note, the filter event can be used from outside this class
 
-      if (this.search) {
-        this.searchInput.addEventListener('keyup', function () {
-          _this2.filter(_this2.searchInput.value);
-        });
-      }
+      if (this.search) this.searchInput.addEventListener('keyup', function () {
+        return _this2.filter(_this2.searchInput.value);
+      });
     }
   }, {
     key: "open",

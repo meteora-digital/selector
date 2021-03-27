@@ -19,28 +19,26 @@ export default class Selector {
       autoClose: true,
     }, options);
 
-    this.initialPlaceholder = this.settings.placeholder;
-    
     // Render the new select box
     this.faux = new Template({
       tagName: 'div',
       classList: this.settings.class,
       innerHTML: [
-      {
-        tagName: 'div',
-        classList: `${this.settings.class}__header`,
-        innerHTML: [
         {
-          tagName: 'span',
-          classList: `${this.settings.class}__placeholder`,
-          innerHTML: this.settings.placeholder,
+          tagName: 'div',
+          classList: `${this.settings.class}__header`,
+          innerHTML: [
+            {
+              tagName: 'span',
+              classList: `${this.settings.class}__placeholder`,
+              innerHTML: this.settings.placeholder,
+            }
+          ]
+        },
+        {
+          tagName: 'ul',
+          classList: `${this.settings.class}__list unstyled`,
         }
-        ]
-      },
-      {
-        tagName: 'ul',
-        classList: `${this.settings.class}__list unstyled`,
-      }
       ]
     });
 
@@ -94,7 +92,7 @@ export default class Selector {
     let selection = [];
 
     // Empty the list
-    this.options.forEach((option) => option.remove());
+    this.options.forEach((option) => option.parentNode.removeChild(option));
     this.options = [];
 
     // Get new options
@@ -199,15 +197,11 @@ export default class Selector {
     // If we click on the header, and the selector is already open, we assume the user is trying to close it
     this.header.addEventListener('click', () => {
       (containsClass(this.select, 'js-active')) ? this.close() : this.open();
-    })
+    });
 
     // When search is enabled add the filter event
     // Note, the filter event can be used from outside this class
-    if (this.search) {
-      this.searchInput.addEventListener('keyup', () => {
-        this.filter(this.searchInput.value);
-      });
-    }
+    if (this.search) this.searchInput.addEventListener('keyup', () => this.filter(this.searchInput.value));
   }
 
   open() {
