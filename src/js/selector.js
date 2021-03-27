@@ -1,6 +1,6 @@
 import Template from '@meteora-digital/template';
 
-import {nodeArray, relativeTarget, containsClass, objectAssign, Event} from '@meteora-digital/helpers';
+import { nodeArray, relativeTarget, containsClass, objectAssign, Event } from 'meteora';
 
 export default class Selector {
   constructor(select, options = {}) {
