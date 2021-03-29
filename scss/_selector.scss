@@ -6,7 +6,7 @@
   $classlist: "#{&}";
     $split-arr: ();
     $index : str-index($classlist, " ");
-    
+
     // loop through string
     @while $index != null {
         $item: str-slice($classlist, 1, $index - 1);
@@ -57,6 +57,8 @@
   position: relative;
   z-index: 100;
   display: block;
+  float: left;
+  min-width: $min-width;
   transition: z-index .3s ease;
 
   + select {
@@ -125,7 +127,7 @@
 
   &__header {
     position: relative;
-    min-width: $min-width;
+    width: 100%;
     padding: $header-padding;
     border: $border-width solid $header-border-color;
     cursor: pointer;
@@ -157,6 +159,8 @@
   }
 
   &__searchInput {
+    position: relative;
+    z-index: 2;
     margin-bottom: 0;
     border: 0;
     width: 100%;
@@ -183,6 +187,7 @@
     transition: transform .2s ease;
     max-height: 40rem;
     overflow: auto;
+    z-index: 150;
   }
 
   &__option {
