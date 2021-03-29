@@ -122,8 +122,10 @@ var Selector = /*#__PURE__*/function () {
           if (option.attributes[i].nodeName.indexOf('data-') >= 0) {
             template.html.setAttribute(option.attributes[i].nodeName, option.attributes[i].nodeValue);
           }
-        } // Append the new options to the page
+        } // If the default option is disabled, disable the faux option
 
+
+        option.disabled ? template.html.setAttribute('data-disabled', true) : template.html.removeAttribute('data-disabled'); // Append the new options to the page
 
         _this.options.push(template.html);
       }); // Create our event handlers and append the items to our list
@@ -131,60 +133,63 @@ var Selector = /*#__PURE__*/function () {
       this.options.forEach(function (option, index) {
         // Change the default select box and toggle some classes
         option.addEventListener('click', function () {
-          // If we are using a multi-select
-          if (_this.settings.multiple) {
-            if (option.getAttribute('data-value') === '') {
-              // Clear all other options
-              _this.options.forEach(function (customOption, customOptionIndex) {
-                customOption.classList.remove("".concat(_this.settings["class"], "__option--active"));
-                _this["default"].options[customOptionIndex].selected = false;
-              }); // Select "all" option
+          // If the default option is enabled
+          if (_this["default"].options[index].disabled === false) {
+            // If we are using a multi-select
+            if (_this.settings.multiple) {
+              if (option.getAttribute('data-value') === '') {
+                // Clear all other options
+                _this.options.forEach(function (customOption, customOptionIndex) {
+                  customOption.classList.remove("".concat(_this.settings["class"], "__option--active"));
+                  _this["default"].options[customOptionIndex].selected = false;
+                }); // Select "all" option
 
 
-              option.classList.add("".concat(_this.settings["class"], "__option--active"));
-            } else {
-              // Clear the all option
-              if (_this["default"].options[0].value === '') _this.options[0].classList.remove("".concat(_this.settings["class"], "__option--active")); // If our option has already been selected, deselect it
+                option.classList.add("".concat(_this.settings["class"], "__option--active"));
+              } else {
+                // Clear the all option
+                if (_this["default"].options[0].value === '') _this.options[0].classList.remove("".concat(_this.settings["class"], "__option--active")); // If our option has already been selected, deselect it
 
-              if ((0, _meteora.containsClass)(option, "".concat(_this.settings["class"], "__option--active"))) {
-                option.classList.remove("".concat(_this.settings["class"], "__option--active"));
-                _this["default"].options[index].selected = false;
-              } // Otherwise, select it
-              else {
-                  option.classList.add("".concat(_this.settings["class"], "__option--active")); // Select all appropriate options in the default select
+                if ((0, _meteora.containsClass)(option, "".concat(_this.settings["class"], "__option--active"))) {
+                  option.classList.remove("".concat(_this.settings["class"], "__option--active"));
+                  _this["default"].options[index].selected = false;
+                } // Otherwise, select it
+                else {
+                    option.classList.add("".concat(_this.settings["class"], "__option--active")); // Select all appropriate options in the default select
 
-                  _this.options.forEach(function (customOption, customOptionIndex) {
-                    _this["default"].options[customOptionIndex].selected = (0, _meteora.containsClass)(customOption, "".concat(_this.settings["class"], "__option--active"));
+                    _this.options.forEach(function (customOption, customOptionIndex) {
+                      _this["default"].options[customOptionIndex].selected = (0, _meteora.containsClass)(customOption, "".concat(_this.settings["class"], "__option--active"));
+                    });
+                  }
+              }
+            } // Otherwise select the single option, then close the input
+            else {
+                selection = [];
+
+                if (!option.classList.contains("".concat(_this.settings["class"], "__option--active"))) {
+                  // Toggle the active state to the option we just clicked
+                  _this.options.forEach(function (o) {
+                    return o.classList.remove("".concat(_this.settings["class"], "__option--active"));
+                  });
+
+                  option.classList.add("".concat(_this.settings["class"], "__option--active")); // Loop default options and select the one's who's value matches our duplicate
+
+                  _this["default"].options.forEach(function (defaultOption) {
+                    defaultOption.selected = defaultOption.value === option.getAttribute('data-value');
                   });
                 }
-            }
-          } // Otherwise select the single option, then close the input
-          else {
-              selection = [];
 
-              if (!option.classList.contains("".concat(_this.settings["class"], "__option--active"))) {
-                // Toggle the active state to the option we just clicked
-                _this.options.forEach(function (o) {
-                  return o.classList.remove("".concat(_this.settings["class"], "__option--active"));
-                });
-
-                option.classList.add("".concat(_this.settings["class"], "__option--active")); // Loop default options and select the one's who's value matches our duplicate
-
-                _this["default"].options.forEach(function (defaultOption) {
-                  defaultOption.selected = defaultOption.value === option.getAttribute('data-value');
-                });
-              }
-
-              if (_this.settings.autoClose) _this.close();
-            } // Our selected items all in a nice list
+                if (_this.settings.autoClose) _this.close();
+              } // Our selected items all in a nice list
 
 
-          selection = (0, _meteora.nodeArray)(_this.list.querySelectorAll(".".concat(_this.settings["class"], "__option--active"))); // Set the placeholder based on the selected items
+            selection = (0, _meteora.nodeArray)(_this.list.querySelectorAll(".".concat(_this.settings["class"], "__option--active"))); // Set the placeholder based on the selected items
 
-          _this.updatePlaceholder(selection); // Finally send a change function to the original select
+            _this.updatePlaceholder(selection); // Finally send a change function to the original select
 
 
-          _this.change();
+            _this.change();
+          }
         }); // Add these options to our list
 
         _this.list.appendChild(option);

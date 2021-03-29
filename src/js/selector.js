@@ -114,6 +114,9 @@ export default class Selector {
         }
       }
 
+      // If the default option is disabled, disable the faux option
+      (option.disabled) ? template.html.setAttribute('data-disabled', true) : template.html.removeAttribute('data-disabled');
+
       // Append the new options to the page
       this.options.push(template.html);
     });
@@ -123,64 +126,67 @@ export default class Selector {
 
       // Change the default select box and toggle some classes
       option.addEventListener('click', () => {
+        // If the default option is enabled
+        if (this.default.options[index].disabled === false) {
+          // If we are using a multi-select
+          if (this.settings.multiple) {
+            if (option.getAttribute('data-value') === '') {
+              // Clear all other options
+              this.options.forEach((customOption, customOptionIndex) => {
+                customOption.classList.remove(`${this.settings.class}__option--active`);
+                this.default.options[customOptionIndex].selected = false;
+              });
 
-        // If we are using a multi-select
-        if (this.settings.multiple) {
-          if (option.getAttribute('data-value') === '') {
-            // Clear all other options
-            this.options.forEach((customOption, customOptionIndex) => {
-              customOption.classList.remove(`${this.settings.class}__option--active`);
-              this.default.options[customOptionIndex].selected = false;
-            });
+              // Select "all" option
+              option.classList.add(`${this.settings.class}__option--active`);
+            }else {
+              // Clear the all option
+              if (this.default.options[0].value === '') this.options[0].classList.remove(`${this.settings.class}__option--active`);
 
-            // Select "all" option
-            option.classList.add(`${this.settings.class}__option--active`);
-          }else {
-            // Clear the all option
-            if (this.default.options[0].value === '') this.options[0].classList.remove(`${this.settings.class}__option--active`);
+              // If our option has already been selected, deselect it
+              if (containsClass(option, `${this.settings.class}__option--active`)) {
+                option.classList.remove(`${this.settings.class}__option--active`);
+                this.default.options[index].selected = false;
+              }
+              // Otherwise, select it
+              else {
+                option.classList.add(`${this.settings.class}__option--active`);
 
-            // If our option has already been selected, deselect it
-            if (containsClass(option, `${this.settings.class}__option--active`)) {
-              option.classList.remove(`${this.settings.class}__option--active`);
-              this.default.options[index].selected = false;
+                // Select all appropriate options in the default select
+                this.options.forEach((customOption, customOptionIndex) =>{
+                  this.default.options[customOptionIndex].selected = (containsClass(customOption, `${this.settings.class}__option--active`));
+                });
+              }
             }
-            // Otherwise, select it
-            else {
+          }
+          // Otherwise select the single option, then close the input
+          else {
+            selection = [];
+            if (! option.classList.contains(`${this.settings.class}__option--active`)) {
+
+              // Toggle the active state to the option we just clicked
+              this.options.forEach((o) => o.classList.remove(`${this.settings.class}__option--active`));
               option.classList.add(`${this.settings.class}__option--active`);
 
-              // Select all appropriate options in the default select
-              this.options.forEach((customOption, customOptionIndex) =>{
-                this.default.options[customOptionIndex].selected = (containsClass(customOption, `${this.settings.class}__option--active`));
+              // Loop default options and select the one's who's value matches our duplicate
+              this.default.options.forEach((defaultOption) => {
+                defaultOption.selected = (defaultOption.value === option.getAttribute('data-value'));
               });
             }
-          }
-        }
-        // Otherwise select the single option, then close the input
-        else {
-          selection = [];
-          if (! option.classList.contains(`${this.settings.class}__option--active`)) {
 
-            // Toggle the active state to the option we just clicked
-            this.options.forEach((o) => o.classList.remove(`${this.settings.class}__option--active`));
-            option.classList.add(`${this.settings.class}__option--active`);
-
-            // Loop default options and select the one's who's value matches our duplicate
-            this.default.options.forEach((defaultOption) => {
-              defaultOption.selected = (defaultOption.value === option.getAttribute('data-value'));
-            });
+            if (this.settings.autoClose) this.close();
           }
 
-          if (this.settings.autoClose) this.close();
+          // Our selected items all in a nice list
+          selection = nodeArray(this.list.querySelectorAll(`.${this.settings.class}__option--active`));
+
+          // Set the placeholder based on the selected items
+          this.updatePlaceholder(selection);
+
+          // Finally send a change function to the original select
+          this.change();
         }
 
-        // Our selected items all in a nice list
-        selection = nodeArray(this.list.querySelectorAll(`.${this.settings.class}__option--active`));
-
-        // Set the placeholder based on the selected items
-        this.updatePlaceholder(selection);
-
-        // Finally send a change function to the original select
-        this.change();
       });
 
       // Add these options to our list
