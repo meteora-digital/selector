@@ -4,7 +4,11 @@
   "description": "An es6 class to replace default select inputs with easy to style HTML.",
   "main": "dist/js/selector.js",
   "scripts": {
-    "test": "echo \"Simple Selector\""
+    "test": "npm i && gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meteora-digital/selector.git"
   },
   "keywords": [
     "select",
@@ -16,6 +20,9 @@
   ],
   "author": "Emmanuel Davies",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/meteora-digital/selector/issues"
+  },
   "dependencies": {
     "meteora": "latest",
     "@meteora-digital/template": "latest"
@@ -27,5 +34,6 @@
     "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-plumber": "^1.2.1"
-  }
+  },
+  "homepage": "https://github.com/meteora-digital/selector#readme"
 }
