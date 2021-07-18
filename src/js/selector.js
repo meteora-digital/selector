@@ -1,305 +1,321 @@
-import Template from '@meteora-digital/template';
+/*------------------------------------------------------------------
+Import modules
+------------------------------------------------------------------*/
 
-import { nodeArray, relativeTarget, containsClass, objectAssign, Event } from 'meteora';
+import { relativeTarget, Event } from 'meteora';
 
-export default class Selector {
+/*------------------------------------------------------------------
+Simple Selector
+------------------------------------------------------------------*/
+
+export default class SimpleSelector {
   constructor(select, options = {}) {
-    // Grab the default select box info
+    // The Simple Selector events will be store here
+    this.events = {};
+    // The selected option values will go here
+    this.selection = [];
+    // The active state for the select
+    this.active = false;
+    // This will be used to trigger a change event on the real select element
+    this.trigger = new Event('change');
+
+    // The default select element
     this.default = {
       select: select,
-      options: nodeArray(select.querySelectorAll('option')),
-    };
-
-    // Gather the user's settings
-    this.settings = objectAssign({
-      placeholder: this.default.select.getAttribute('placeholder') || 'Select',
-      class: 'selector',
-      search: false,
-      multiple: (this.default.select.getAttribute('multiple') != undefined) || false,
-      autoClose: true,
-    }, options);
-
-    // Render the new select box
-    this.faux = new Template({
-      tagName: 'div',
-      classList: this.settings.class,
-      innerHTML: [
-        {
-          tagName: 'div',
-          classList: `${this.settings.class}__header`,
-          innerHTML: [
-            {
-              tagName: 'span',
-              classList: `${this.settings.class}__placeholder`,
-              innerHTML: this.settings.placeholder,
-            }
-          ]
-        },
-        {
-          tagName: 'ul',
-          classList: `${this.settings.class}__list unstyled`,
-        }
-      ]
-    });
-
-    // Create the new template before the existing select
-    this.default.select.parentNode.insertBefore(this.faux.html, this.default.select);
-
-    // Initialise
-    this.select = this.faux.html;
-    this.header = this.select.querySelector(`.${this.settings.class}__header`);
-    this.placeholder = this.select.querySelector(`.${this.settings.class}__placeholder`);
-    this.list = this.select.querySelector(`.${this.settings.class}__list`);
-    this.options = [];
-    this.val = [];
-    this.changeEvent = Event('change');
-
-    this.updateOptions();
-
-    // Render the search input
-    if (this.settings.search) {
-
-      // Create the template
-      let search = new Template({
-        tagName: 'li', 
-        classList: `${this.settings.class}__search`,
-        innerHTML: [{
-          tagName: 'input',
-          classList: `${this.settings.class}__searchInput`,
-          placeholder: 'Search',
-        }],
-      });
-
-      // Initialise
-      this.search = search.html;
-      this.searchInput = this.search.querySelector(`.${this.settings.class}__searchInput`);
-
-      this.list.insertBefore(this.search, this.list.childNodes[0]);
-    };
-
-    if (this.settings.multiple) {
-      this.default.select.setAttribute('multiple', true);
-      this.select.classList.add('multiple');
+      options: select.children,
     }
 
-    this.events();
+    // The default settings
+    this.settings = {
+      search: false,
+      autoClose: true,
+      class: 'selector',
+      placeholder: this.default.select.getAttribute('placeholder') || 'Select',
+    }
 
-    this.updateValue();
-  }
+    // Assign the user options to the defaults
+    for (let key in this.settings) {
+      if (this.settings.hasOwnProperty(key) && options.hasOwnProperty(key)) this.settings[key] = options[key];
+    }
 
-  updateOptions() {
-    let template = null;
-    let selection = [];
-
-    // Empty the list
-    this.options.forEach((option) => option.parentNode.removeChild(option));
+    // The new select element
+    this.select = document.createElement('div');
+    // This will hold our options
     this.options = [];
 
-    // Get new options
-    this.default.options = nodeArray(this.default.select.querySelectorAll('option'));
+    // These are our template elements
+    this.template = {
+      header: document.createElement('div'),
+      placeholder: document.createElement('span'),
+      list: document.createElement('div'),
+      options: [],
+      search: document.createElement('input'),
+    }
 
-    // Gather our data from the <option>s
-    this.default.options.forEach((option) => {
-      template = new Template({
-        tagName: 'li',
-        classList: `${this.settings.class}__option`,
-        innerHTML: option.innerHTML,
-        dataset: {value: option.value},
+    // Add a class to the new select
+    this.select.className = this.settings.class;
+
+    // Loop the template object and add some classes
+    for (let name in this.template) {
+      if (this.template.hasOwnProperty(name)) this.template[name].className = `${this.settings.class}__${name}`;
+    }
+
+    // Build the select html
+    this.template.header.appendChild(this.template.placeholder);
+    this.select.appendChild(this.template.header);
+    this.select.appendChild(this.template.list);
+
+    // If we have search enabled
+    if (this.settings.search) {
+      // The search input is a text input
+      this.template.search.type = 'text',
+      // Put the search input into the select list
+      this.template.list.appendChild(this.template.search);
+      // When we type in the search input, we need to filter the options
+      this.template.search.addEventListener('keyup', () => this.filter(this.template.search.value));
+    }
+
+    // When the default select is changed, we want to update the Simple Selector
+    this.default.select.addEventListener('change', () => this.update());
+
+    // Make the header Tab Accessible
+    this.template.header.setAttribute('tabindex', "0");
+
+    // If we want it to auto close
+    if (this.settings.autoClose) {
+      // If we have clicked somewhere else on the page then close the select
+      window.addEventListener('click', (e) => {
+        if (!relativeTarget(e.target, this.select)) this.close();
       });
+    }
+
+    // Clicking the header should open / close the select list
+    this.template.header.addEventListener('click', (e) => {
+      e.preventDefault();
+      (this.active) ? this.close() : this.open();
+    });
+
+    // Put the new selector in the template
+    this.default.select.parentNode.insertBefore(this.select, this.default.select);
+
+    // Initialise the selector
+    this.reinit();
+    this.update();
+  }
+
+  reinit() {
+    // Find all the options in the real select element
+    this.default.options = this.default.select.children;
+
+    // Remove the current options from the list
+    for (var i = 0; i < this.template.list.children.length; i++) {
+      this.template.list.removeChild(this.template.list.children[i]);
+    }
+
+    // Reset the options
+    this.options = [];
+    this.template.options = [];
+
+    // Loop all the option elements and add a new replacement to our select
+    for (let i = 0; i < this.default.options.length; i++) {
+      // Save it as an option
+      const option = this.default.options[i];
+      // Create our new option element
+      const replacement = document.createElement('span');
+
+      // Add the value to the replacement option
+      replacement.setAttribute('data-value', option.value);
+      // Get the content of the real option and chuck it into the replacement
+      replacement.innerHTML = option.innerHTML;
+      // Add a class to the replacement option
+      replacement.className = `${this.settings.class}__option`;
 
       // Grab all the data attributes from the option and assign them to the new one
-      for (var i = 0; i < option.attributes.length; i++) {
-        if (option.attributes[i].nodeName.indexOf('data-') >= 0) {
-          template.html.setAttribute(option.attributes[i].nodeName, option.attributes[i].nodeValue);
+      for (let j = 0; j < option.attributes.length; j++) {
+        // Save as an attribute
+        const attribute = option.attributes[i];
+
+        // If it is a data attribute
+        if (attribute && attribute.nodeName.indexOf('data-') > -1) {
+          // Add it to the new replacement option
+          replacement.setAttribute(attribute.nodeName, attribute.nodeValue);
         }
       }
 
-      // If the default option is disabled, disable the faux option
-      (option.disabled) ? template.html.setAttribute('data-disabled', true) : template.html.removeAttribute('data-disabled');
+      // If the option is disabled, we need to reflect that on the new one
+      if (option.disabled) {
+        replacement.setAttribute('data-disabled', true);
+      } else {
+        replacement.removeAttribute('data-disabled');
+      }
 
-      // Append the new options to the page
-      this.options.push(template.html);
-    });
+      // Add this new option to the template options array
+      this.options.push({
+        default: option,
+        element: replacement,
+        value: option.value,
+      });
+    }
 
-    // Create our event handlers and append the items to our list
+    // For all the new options
     this.options.forEach((option, index) => {
+      // Tab Accessibility
+      option.element.setAttribute('tabindex', "0");
 
-      // Change the default select box and toggle some classes
-      option.addEventListener('click', () => {
-        // If the default option is enabled
-        if (this.default.options[index].disabled === false) {
-          // If we are using a multi-select
-          if (this.settings.multiple) {
-            if (option.getAttribute('data-value') === '') {
-              // Clear all other options
-              this.options.forEach((customOption, customOptionIndex) => {
-                customOption.classList.remove(`${this.settings.class}__option--active`);
-                this.default.options[customOptionIndex].selected = false;
-              });
+      // When we click the option we need to change the real select's value
+      option.element.addEventListener('click', (e) => {
+        e.preventDefault();
 
-              // Select "all" option
-              option.classList.add(`${this.settings.class}__option--active`);
-            }else {
-              // Clear the all option
-              if (this.default.options[0].value === '') this.options[0].classList.remove(`${this.settings.class}__option--active`);
-
-              // If our option has already been selected, deselect it
-              if (containsClass(option, `${this.settings.class}__option--active`)) {
-                option.classList.remove(`${this.settings.class}__option--active`);
-                this.default.options[index].selected = false;
-              }
-              // Otherwise, select it
-              else {
-                option.classList.add(`${this.settings.class}__option--active`);
-
-                // Select all appropriate options in the default select
-                this.options.forEach((customOption, customOptionIndex) =>{
-                  this.default.options[customOptionIndex].selected = (containsClass(customOption, `${this.settings.class}__option--active`));
-                });
-              }
-            }
+        // If this is a multi select toggle the option selected state
+        if (this.default.select.type == 'select-multiple') {
+          // If this option has no value
+          if (option.default.value == "") {
+            // Deselect all selected items
+            this.options.filter((item) => item.default.getAttribute('selected')).forEach((item) => item.default.removeAttribute('selected'));
+          } else {
+            // Deselect the item with no value
+            this.options.filter((item) => item.value == '').forEach((item) => item.default.removeAttribute('selected'));
           }
-          // Otherwise select the single option, then close the input
+
+          // If the option is selected, deselect it
+          if (option.default.selected) {
+            option.default.removeAttribute('selected');
+          }
+          // Otherwise select it
           else {
-            selection = [];
-            if (! option.classList.contains(`${this.settings.class}__option--active`)) {
-
-              // Toggle the active state to the option we just clicked
-              this.options.forEach((o) => o.classList.remove(`${this.settings.class}__option--active`));
-              option.classList.add(`${this.settings.class}__option--active`);
-
-              // Loop default options and select the one's who's value matches our duplicate
-              this.default.options.forEach((defaultOption) => {
-                defaultOption.selected = (defaultOption.value === option.getAttribute('data-value'));
-              });
-            }
-
-            if (this.settings.autoClose) this.close();
+            option.default.setAttribute('selected', 'selected');
           }
-
-          // Our selected items all in a nice list
-          selection = nodeArray(this.list.querySelectorAll(`.${this.settings.class}__option--active`));
-
-          // Set the placeholder based on the selected items
-          this.updatePlaceholder(selection);
-
-          // Finally send a change function to the original select
-          this.change();
+        }
+        // Otherwise select just the one item
+        else {
+          
+          this.default.select.selectedIndex = index;
         }
 
+        // Trigger the change event on the default select
+        this.default.select.dispatchEvent(this.trigger);
+
+        // If we want it to autoClose and it is not a multi select, then close after selecting an option
+        if (this.default.select.type == 'select-one' && this.settings.autoClose) this.close();
       });
 
-      // Add these options to our list
-      this.list.appendChild(option);
+      // Add the new option element to the template object and list element
+      this.template.options.push(option.element);
+      this.template.list.appendChild(option.element);
     });
+
+    // Run the reinit callback
+    this.callback('reinit', this);
   }
 
-  events() {
-    // Open or close the select depending on the user's clicked target
-    window.addEventListener('click', (e) => {
-      if (!relativeTarget(e.target, this.select)) this.close();
-    });
+  update() {
+    // Reset our selection
+    this.selection = [];
 
-    // If we click on the header, and the selector is already open, we assume the user is trying to close it
-    this.header.addEventListener('click', () => {
-      (containsClass(this.select, 'js-active')) ? this.close() : this.open();
-    });
+    // Loop all the options and do something with the selected options
+    for (let i = 0; i < this.options.length; i++) {
+      // Save this as an option
+      const option = this.options[i];
 
-    // When search is enabled add the filter event
-    // Note, the filter event can be used from outside this class
-    if (this.search) this.searchInput.addEventListener('keyup', () => this.filter(this.searchInput.value));
+      // If the option is selected,
+      if (option.default.selected) {
+        // Add an active class
+        option.element.classList.add(`${this.settings.class}__option--active`);
+        // Push this option value to the selection
+        this.selection.push({
+          text: option.default.text,
+          value: option.default.value,
+        });
+      } else {
+        // Otherwise remove the active class
+        option.element.classList.remove(`${this.settings.class}__option--active`);
+      }
+    }
+
+    // Set the placeholder text
+    switch (this.selection.length) {
+      case 0:
+        // We have nothing selected so set the placeholder back to the default value
+        this.template.placeholder.innerHTML = this.settings.placeholder;
+        this.template.placeholder.className = `${this.settings.class}__placeholder`;
+        break;
+      case 1:
+        // we have one option selected so set the to match the selected option's text
+        this.template.placeholder.innerHTML = this.selection[0].text;
+        this.template.placeholder.classList.add(`${this.settings.class}__placeholder--single`);
+        this.template.placeholder.classList.remove(`${this.settings.class}__placeholder--multiple`);
+        break;
+      default:
+        // Otherwise we have multiple selected
+        this.template.placeholder.innerHTML = 'Multiple Selected';
+        this.template.placeholder.classList.remove(`${this.settings.class}__placeholder--single`);
+        this.template.placeholder.classList.add(`${this.settings.class}__placeholder--multiple`);
+        break;
+    }
+
+    // Run the update callback
+    this.callback('update', this);
   }
 
   open() {
     // Add the active state
-    this.select.classList.add('js-active');
+    this.select.classList.add(`${this.settings.class}--active`);
+
+    // Activate the select state
+    this.active = true;
+
+    // Run the open callback
+    this.callback('open', this);
   }
 
   close() {
     // Remove the active state
-    this.select.classList.remove('js-active');
+    this.select.classList.remove(`${this.settings.class}--active`);
 
     // Clear the search
     if (this.search) {
       this.searchInput.value = '';
       this.filter();
     };
-  }
 
-  value() {
-    // function to return the single value, or an array of multiple values as needed
-    this.val = [];
-    
-    this.default.options.forEach((option) => {
-      if (option.selected) this.val.push(option.value);
-    });
+    // Deactivate the select state
+    this.active = false;
 
-    // if 2 of more -> array else if 1 -> value else if 0 -> ''
-    return (this.val.length >= 2) ? this.val : (this.val.length === 1) ? this.val[0] : '';
+    // Run the close callback
+    this.callback('close', this);
   }
 
   // Filters the options by looking for a specific string
   filter(string = '') {
+    // Loop through all the options
     this.options.forEach((option) => {
-      option.style.display = (option.textContent.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) ? 'block' : 'none';
+      // If the option's text content matches our search query, or if the search query is empty
+      if (option.textContent.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
+        // Remove the hidden class
+        option.element.classList.remove(`${this.settings.class}--hidden`);
+      }
+      // Otherwise
+      else {
+        // Add a hidden class
+        option.element.classList.add(`${this.settings.class}--hidden`);
+      }
     });
+
+    // Run the filter callback
+    this.callback('filter', this);
   }
 
-  // Event to fire when dynamically changing the default select
-  change() {
-    this.default.select.dispatchEvent(this.changeEvent);
+  callback(type, data = false) {
+    // run the callback functions
+    if (this.events[type]) this.events[type].forEach((event) => event(data));
   }
 
-  // Set the placeholder based on the selected items
-  updatePlaceholder(selection) {
-    if (selection.length >= 2) {
-      // Add a class to show multiple options are selected
-      this.placeholder.classList.add('multiple-selected');
-      // Remove the class that shows one option is selected
-      this.placeholder.classList.remove('single-selected');
-      this.placeholder.innerHTML = 'Multiple selected';
-    } else if (selection.length === 1 && selection[0].getAttribute('data-value') != '') {
-      // Add a class to shows one option is selected
-      this.placeholder.classList.add('single-selected');
-      // Remove the class that shows multiple options are selected
-      this.placeholder.classList.remove('multiple-selected');
-      this.placeholder.innerHTML = selection[0].innerHTML;
-    } else {
-      // Remove the class that shows one option is selected
-      this.placeholder.classList.remove('single-selected');
-      // Remove the class that shows multiple options are selected
-      this.placeholder.classList.remove('multiple-selected');
-      this.placeholder.innerHTML = this.settings.placeholder;
-      if (this.settings.multiple && this.default.options[0].value === '') this.options[0].classList.add(`${this.settings.class}__option--active`);
+  on(event, func) {
+    // If we loaded an event and it's not the on event and we also loaded a function
+    if (event && event != 'on' && event != 'callback' && this[event] && func && typeof func == 'function') {
+      if (this.events[event] == undefined) this.events[event] = [];
+      // Push a new event to the event array
+      this.events[event].push(func);
     }
   }
-
-  updateValue() {
-    let selection = [];
-    this.default.options.forEach((option, index) => {
-      if (option.selected && option.value !== "") selection.push(option);
-      (option.selected) ? this.options[index].classList.add(`${this.settings.class}__option--active`) : this.options[index].classList.remove(`${this.settings.class}__option--active`);
-    });
-
-    // Set the placeholder based on the selected items
-    this.updatePlaceholder(selection);
-  }
-
-  update() {
-    this.updateOptions();
-    this.updateValue();
-  }
 }
-
-// <select name="JobType" id="JobType" class="js-select">
-//   <option value="0">View All</option>
-//   <option value="1">Full Time</option>
-//   <option value="1">Part Time</option>
-//   <option value="1">Fixed Term</option>
-//   <option value="1">Contract</option>
-//   <option value="1">Casual</option>
-// </select>
-
-// import Selector from './components/Selector';
-
-// nodeArray(document.querSelectorAll('select.js-select')).forEach((select) => new Selector(select));

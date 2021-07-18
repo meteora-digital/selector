@@ -24,8 +24,8 @@
     "url": "https://github.com/meteora-digital/selector/issues"
   },
   "dependencies": {
-    "meteora": "latest",
-    "@meteora-digital/template": "latest"
+    "@meteora-digital/template": "latest",
+    "meteora": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",

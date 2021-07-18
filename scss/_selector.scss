@@ -65,7 +65,7 @@
     display: none;
   }
 
-  &.js-active {
+  &--active {
     z-index: 150;
 
     #{$parent} {
