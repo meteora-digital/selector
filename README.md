@@ -1,6 +1,6 @@
 # Simple Selector
 
-Simple Selector is an es6 class used to create easily styleable select input. Simple Selector will create an HTML template that takes the place of your standard <select></select> tag.
+Simple Selector is an es6 class used to create easily styleable select input. Simple Selector will create an HTML template that takes the place of your standard select tag.
 
 ## Installation
 
@@ -9,6 +9,8 @@ with webpack
 ```bash
 yarn add simple-selector
 ```
+
+##### Note: Version 2.0.0+ includes breaking changes. You will need to update your working environment to reflect this update, or continue using the latest 1.5.0 release.
 
 ## Usage
 
