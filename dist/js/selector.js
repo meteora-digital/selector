@@ -36,7 +36,9 @@ var SimpleSelector = /*#__PURE__*/function () {
     this["default"] = {
       select: select,
       options: select.children
-    }; // The default settings
+    }; // The select's ID
+
+    this.id = 'SimpleSelector_' + this["default"].select.id || document.querySelectorAll('select').indexOf(this["default"].select); // The default settings
 
     this.settings = {
       search: false,
@@ -104,6 +106,13 @@ var SimpleSelector = /*#__PURE__*/function () {
     this.template.header.addEventListener('click', function (e) {
       e.preventDefault();
       _this.active ? _this.close() : _this.open();
+    }); // When the header is focused if we hit enter
+
+    this.template.header.addEventListener('keypress', function (e) {
+      if (e.keyCode === 13) {
+        e.preventDefault();
+        _this.active ? _this.close() : _this.open();
+      }
     }); // Put the new selector in the template
 
     this["default"].select.parentNode.insertBefore(this.select, this["default"].select); // Initialise the selector
@@ -126,51 +135,56 @@ var SimpleSelector = /*#__PURE__*/function () {
 
 
       this.options = [];
-      this.template.options = []; // Loop all the option elements and add a new replacement to our select
+      this.template.options = []; // Loop all the option elements and add a new input to our select
 
       for (var _i = 0; _i < this["default"].options.length; _i++) {
         // Save it as an option
         var option = this["default"].options[_i]; // Create our new option element
 
-        var replacement = document.createElement('span'); // Add the value to the replacement option
+        var input = document.createElement('input'); // Create a new label
 
-        replacement.setAttribute('data-value', option.value); // Get the content of the real option and chuck it into the replacement
+        var label = document.createElement('label'); // Set the type based on the type of select
 
-        replacement.innerHTML = option.innerHTML; // Add a class to the replacement option
+        input.type = this["default"].select.type == 'select-one' ? 'radio' : 'checkbox'; // Add the value to the input option
 
-        replacement.className = "".concat(this.settings["class"], "__option"); // Grab all the data attributes from the option and assign them to the new one
+        input.value = option.value; // The input name
+
+        input.name = this.id; // The input ID
+
+        input.id = "".concat(this.id, "_").concat(_i); // Get the content of the real option and chuck it into the label
+
+        label.innerHTML = option.innerHTML; // Add a class to the input option
+
+        label.className = "".concat(this.settings["class"], "__option"); // The label for attribute
+
+        label.htmlFor = "".concat(this.id, "_").concat(_i); // Grab all the data attributes from the option and assign them to the new one
 
         for (var j = 0; j < option.attributes.length; j++) {
           // Save as an attribute
           var attribute = option.attributes[_i]; // If it is a data attribute
 
           if (attribute && attribute.nodeName.indexOf('data-') > -1) {
-            // Add it to the new replacement option
-            replacement.setAttribute(attribute.nodeName, attribute.nodeValue);
+            // Add it to the new input option
+            input.setAttribute(attribute.nodeName, attribute.nodeValue);
           }
         } // If the option is disabled, we need to reflect that on the new one
 
 
-        if (option.disabled) {
-          replacement.setAttribute('data-disabled', true);
-        } else {
-          replacement.removeAttribute('data-disabled');
-        } // Add this new option to the template options array
-
+        input.disabled = option.disabled; // Add this new option to the template options array
 
         this.options.push({
           "default": option,
-          element: replacement,
-          value: option.value
+          input: input,
+          label: label
         });
       } // For all the new options
 
 
       this.options.forEach(function (option, index) {
         // Tab Accessibility
-        option.element.setAttribute('tabindex', "0"); // When we click the option we need to change the real select's value
+        option.input.setAttribute('tabindex', "0"); // When we click the option we need to change the real select's value
 
-        option.element.addEventListener('click', function (e) {
+        option.input.addEventListener('change', function (e) {
           e.preventDefault(); // If this is a multi select toggle the option selected state
 
           if (_this2["default"].select.type == 'select-multiple') {
@@ -185,18 +199,18 @@ var SimpleSelector = /*#__PURE__*/function () {
             } else {
               // Deselect the item with no value
               _this2.options.filter(function (item) {
-                return item.value == '';
+                return item["default"].value == '';
               }).forEach(function (item) {
                 return item["default"].removeAttribute('selected');
               });
             } // If the option is selected, deselect it
 
 
-            if (option["default"].selected) {
-              option["default"].removeAttribute('selected');
+            if (option.input.checked) {
+              option["default"].setAttribute('selected', 'selected');
             } // Otherwise select it
             else {
-                option["default"].setAttribute('selected', 'selected');
+                option["default"].removeAttribute('selected');
               }
           } // Otherwise select just the one item
           else {
@@ -210,9 +224,11 @@ var SimpleSelector = /*#__PURE__*/function () {
           if (_this2["default"].select.type == 'select-one' && _this2.settings.autoClose) _this2.close();
         }); // Add the new option element to the template object and list element
 
-        _this2.template.options.push(option.element);
+        _this2.template.options.push(option.input);
 
-        _this2.template.list.appendChild(option.element);
+        _this2.template.list.appendChild(option.input);
+
+        _this2.template.list.appendChild(option.label);
       }); // Run the reinit callback
 
       this.callback('reinit', this);
@@ -228,16 +244,13 @@ var SimpleSelector = /*#__PURE__*/function () {
         var option = this.options[i]; // If the option is selected,
 
         if (option["default"].selected) {
-          // Add an active class
-          option.element.classList.add("".concat(this.settings["class"], "__option--active")); // Push this option value to the selection
+          // Activate the input
+          option.input.checked = true; // Push this option value to the selection
 
-          this.selection.push({
-            text: option["default"].text,
-            value: option["default"].value
-          });
+          this.selection.push(option);
         } else {
-          // Otherwise remove the active class
-          option.element.classList.remove("".concat(this.settings["class"], "__option--active"));
+          // Deactivate the input
+          option.input.checked = false;
         }
       } // Set the placeholder text
 
@@ -251,7 +264,7 @@ var SimpleSelector = /*#__PURE__*/function () {
 
         case 1:
           // we have one option selected so set the to match the selected option's text
-          this.template.placeholder.innerHTML = this.selection[0].text;
+          this.template.placeholder.innerHTML = this.selection[0].label.textContent;
           this.template.placeholder.classList.add("".concat(this.settings["class"], "__placeholder--single"));
           this.template.placeholder.classList.remove("".concat(this.settings["class"], "__placeholder--multiple"));
           break;
@@ -286,7 +299,7 @@ var SimpleSelector = /*#__PURE__*/function () {
       this.select.classList.remove("".concat(this.settings["class"], "--active")); // Clear the search
 
       if (this.search) {
-        this.searchInput.value = '';
+        this.search.value = '';
         this.filter();
       }
 
@@ -306,13 +319,13 @@ var SimpleSelector = /*#__PURE__*/function () {
       // Loop through all the options
       this.options.forEach(function (option) {
         // If the option's text content matches our search query, or if the search query is empty
-        if (option.element.textContent.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
+        if (option.input.textContent.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
           // Remove the hidden class
-          option.element.classList.remove("".concat(_this3.settings["class"], "--hidden"));
+          option.input.classList.remove("".concat(_this3.settings["class"], "--hidden"));
         } // Otherwise
         else {
             // Add a hidden class
-            option.element.classList.add("".concat(_this3.settings["class"], "--hidden"));
+            option.input.classList.add("".concat(_this3.settings["class"], "--hidden"));
           }
       }); // Run the filter callback
 

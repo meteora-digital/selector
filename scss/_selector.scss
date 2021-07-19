@@ -4,20 +4,20 @@
 
 @function simple-selector-scope {
   $classlist: "#{&}";
-    $split-arr: ();
-    $index : str-index($classlist, " ");
+  $split-arr: ();
+  $index : str-index($classlist, " ");
 
     // loop through string
     @while $index != null {
-        $item: str-slice($classlist, 1, $index - 1);
-        $split-arr: append($split-arr, $item);
-        $classlist: str-slice($classlist, $index + 1);
-        $index : str-index($classlist, " ");
+      $item: str-slice($classlist, 1, $index - 1);
+      $split-arr: append($split-arr, $item);
+      $classlist: str-slice($classlist, $index + 1);
+      $index : str-index($classlist, " ");
     }
 
     $split-arr: append($split-arr, $classlist);
     @return nth($classlist, length($classlist));
-}
+  }
 
 // ======================================
 // Styles ===============================
@@ -52,7 +52,7 @@
 
   $option-color--active: $white,
   $option-background-color--active: rgba($black, .6),
-) {
+  ) {
   $parent: simple-selector-scope();
   position: relative;
   z-index: 100;
@@ -184,36 +184,67 @@
     max-height: 40rem;
     overflow: auto;
     z-index: 150;
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      position: absolute;
+      left: 0;
+      height: 0;
+      width: 0;
+      opacity: 0;
+
+      &:not([disabled]) {
+        + #{$parent} {
+          &__option {
+            cursor: pointer;
+
+            &:hover,
+            &:focus {
+              color: $option-color--hover;
+              background-color: $option-background-color--hover;
+            }
+          }
+        }
+
+        &:hover,
+        &:focus {
+          + #{$parent} {
+            &__option {
+              color: $option-color--hover;
+              background-color: $option-background-color--hover;
+            }
+          }
+        }
+
+        &:checked {
+          + #{$parent} {
+            &__option {
+              color: $option-color--active;
+              background-color: $option-background-color--active;
+            }
+          }
+        }
+      }
+
+      &[disabled] {
+        + #{$parent} {
+          &__option {
+            opacity: .3;
+          }
+        }
+      }
+    }
   }
 
   &__option {
     display: block;
+    position: relative;
+    z-index: 1;
     user-select: none;
     padding: 1rem 2rem!important;
     margin-bottom: 0!important;
     color: inherit;
     background-color: $option-background-color;
     transition: background-color $option-transition-speed ease, color $option-transition-speed ease;
-
-    &:not([data-disabled="true"]) {
-      cursor: pointer;
-
-      &:hover {
-        color: $option-color--hover;
-        background-color: $option-background-color--hover;
-      }
-    }
-
-    &[data-disabled="true"] {
-      opacity: .3;
-    }
-
-    &--active {
-      &,
-      &:hover {
-        color: $option-color--active;
-        background-color: $option-background-color--active;
-      }
-    }
   }
 }

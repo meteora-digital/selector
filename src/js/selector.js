@@ -25,6 +25,9 @@ export default class SimpleSelector {
       options: select.children,
     }
 
+    // The select's ID
+    this.id = 'SimpleSelector_' + this.default.select.id || document.querySelectorAll('select').indexOf(this.default.select);
+
     // The default settings
     this.settings = {
       search: false,
@@ -97,6 +100,14 @@ export default class SimpleSelector {
       (this.active) ? this.close() : this.open();
     });
 
+    // When the header is focused if we hit enter
+    this.template.header.addEventListener('keypress', (e) => {
+      if (e.keyCode === 13) {
+        e.preventDefault();
+        (this.active) ? this.close() : this.open();
+      }
+    });
+
     // Put the new selector in the template
     this.default.select.parentNode.insertBefore(this.select, this.default.select);
 
@@ -118,19 +129,30 @@ export default class SimpleSelector {
     this.options = [];
     this.template.options = [];
 
-    // Loop all the option elements and add a new replacement to our select
+    // Loop all the option elements and add a new input to our select
     for (let i = 0; i < this.default.options.length; i++) {
       // Save it as an option
       const option = this.default.options[i];
       // Create our new option element
-      const replacement = document.createElement('span');
+      const input = document.createElement('input');
+      // Create a new label
+      const label =  document.createElement('label');
 
-      // Add the value to the replacement option
-      replacement.setAttribute('data-value', option.value);
-      // Get the content of the real option and chuck it into the replacement
-      replacement.innerHTML = option.innerHTML;
-      // Add a class to the replacement option
-      replacement.className = `${this.settings.class}__option`;
+      // Set the type based on the type of select
+      input.type = (this.default.select.type == 'select-one') ? 'radio' : 'checkbox';
+      // Add the value to the input option
+      input.value = option.value;
+      // The input name
+      input.name = this.id;
+      // The input ID
+      input.id = `${this.id}_${i}`;
+
+      // Get the content of the real option and chuck it into the label
+      label.innerHTML = option.innerHTML;
+      // Add a class to the input option
+      label.className = `${this.settings.class}__option`;
+      // The label for attribute
+      label.htmlFor = `${this.id}_${i}`;
 
       // Grab all the data attributes from the option and assign them to the new one
       for (let j = 0; j < option.attributes.length; j++) {
@@ -139,33 +161,29 @@ export default class SimpleSelector {
 
         // If it is a data attribute
         if (attribute && attribute.nodeName.indexOf('data-') > -1) {
-          // Add it to the new replacement option
-          replacement.setAttribute(attribute.nodeName, attribute.nodeValue);
+          // Add it to the new input option
+          input.setAttribute(attribute.nodeName, attribute.nodeValue);
         }
       }
 
       // If the option is disabled, we need to reflect that on the new one
-      if (option.disabled) {
-        replacement.setAttribute('data-disabled', true);
-      } else {
-        replacement.removeAttribute('data-disabled');
-      }
+      input.disabled = (option.disabled);
 
       // Add this new option to the template options array
       this.options.push({
         default: option,
-        element: replacement,
-        value: option.value,
+        input: input,
+        label: label,
       });
     }
 
     // For all the new options
     this.options.forEach((option, index) => {
       // Tab Accessibility
-      option.element.setAttribute('tabindex', "0");
+      option.input.setAttribute('tabindex', "0");
 
       // When we click the option we need to change the real select's value
-      option.element.addEventListener('click', (e) => {
+      option.input.addEventListener('change', (e) => {
         e.preventDefault();
 
         // If this is a multi select toggle the option selected state
@@ -176,16 +194,16 @@ export default class SimpleSelector {
             this.options.filter((item) => item.default.getAttribute('selected')).forEach((item) => item.default.removeAttribute('selected'));
           } else {
             // Deselect the item with no value
-            this.options.filter((item) => item.value == '').forEach((item) => item.default.removeAttribute('selected'));
+            this.options.filter((item) => item.default.value == '').forEach((item) => item.default.removeAttribute('selected'));
           }
 
           // If the option is selected, deselect it
-          if (option.default.selected) {
-            option.default.removeAttribute('selected');
+          if (option.input.checked) {
+            option.default.setAttribute('selected', 'selected');
           }
           // Otherwise select it
           else {
-            option.default.setAttribute('selected', 'selected');
+            option.default.removeAttribute('selected');
           }
         }
         // Otherwise select just the one item
@@ -201,8 +219,9 @@ export default class SimpleSelector {
       });
 
       // Add the new option element to the template object and list element
-      this.template.options.push(option.element);
-      this.template.list.appendChild(option.element);
+      this.template.options.push(option.input);
+      this.template.list.appendChild(option.input);
+      this.template.list.appendChild(option.label);
     });
 
     // Run the reinit callback
@@ -220,16 +239,13 @@ export default class SimpleSelector {
 
       // If the option is selected,
       if (option.default.selected) {
-        // Add an active class
-        option.element.classList.add(`${this.settings.class}__option--active`);
+        // Activate the input
+        option.input.checked = true;
         // Push this option value to the selection
-        this.selection.push({
-          text: option.default.text,
-          value: option.default.value,
-        });
+        this.selection.push(option);
       } else {
-        // Otherwise remove the active class
-        option.element.classList.remove(`${this.settings.class}__option--active`);
+        // Deactivate the input
+        option.input.checked = false;
       }
     }
 
@@ -242,7 +258,7 @@ export default class SimpleSelector {
         break;
       case 1:
         // we have one option selected so set the to match the selected option's text
-        this.template.placeholder.innerHTML = this.selection[0].text;
+        this.template.placeholder.innerHTML = this.selection[0].label.textContent;
         this.template.placeholder.classList.add(`${this.settings.class}__placeholder--single`);
         this.template.placeholder.classList.remove(`${this.settings.class}__placeholder--multiple`);
         break;
@@ -278,7 +294,7 @@ export default class SimpleSelector {
 
     // Clear the search
     if (this.search) {
-      this.searchInput.value = '';
+      this.search.value = '';
       this.filter();
     };
 
@@ -294,14 +310,14 @@ export default class SimpleSelector {
     // Loop through all the options
     this.options.forEach((option) => {
       // If the option's text content matches our search query, or if the search query is empty
-      if (option.element.textContent.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
+      if (option.input.textContent.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
         // Remove the hidden class
-        option.element.classList.remove(`${this.settings.class}--hidden`);
+        option.input.classList.remove(`${this.settings.class}--hidden`);
       }
       // Otherwise
       else {
         // Add a hidden class
-        option.element.classList.add(`${this.settings.class}--hidden`);
+        option.input.classList.add(`${this.settings.class}--hidden`);
       }
     });
 
