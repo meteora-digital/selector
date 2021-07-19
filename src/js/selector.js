@@ -17,7 +17,7 @@ export default class SimpleSelector {
     // The active state for the select
     this.active = false;
     // This will be used to trigger a change event on the real select element
-    this.trigger = new Event('change');
+    this.change = new Event('change');
     // Disable all inputs to keep form submissions clean
     this.disable = null;
 
@@ -183,8 +183,11 @@ export default class SimpleSelector {
 
     // For all the new options
     this.options.forEach((option, index) => {
-      // Tab Accessibility
-      option.input.setAttribute('tabindex', "0");
+      // Create a new group div to hold the input and label
+      const group = document.createElement('div');
+
+      // Set a class for the group element
+      group.className = `${this.settings.class}__item`;
 
       // When we click the option we need to change the real select's value
       option.input.addEventListener('change', (e) => {
@@ -216,7 +219,7 @@ export default class SimpleSelector {
         }
 
         // Trigger the change event on the default select
-        this.default.select.dispatchEvent(this.trigger);
+        this.default.select.dispatchEvent(this.change);
       });
 
       // If we want it to autoClose and it is not a multi select, then close after selecting an option
@@ -233,8 +236,13 @@ export default class SimpleSelector {
 
       // Add the new option element to the template object and list element
       this.template.options.push(option.input);
-      this.template.list.appendChild(option.input);
-      this.template.list.appendChild(option.label);
+
+      // Put the input / label into the group element
+      group.appendChild(option.input);
+      group.appendChild(option.label);
+
+      // Put the new group into the list
+      this.template.list.appendChild(group);
     });
 
     // Run the reinit callback

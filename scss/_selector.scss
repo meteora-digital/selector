@@ -84,47 +84,6 @@
     }
   }
 
-  &.multiple {
-    #{$parent}__option {
-      position: relative;
-      padding-right: 4rem!important;
-
-      &:before,
-      &:after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        right: 2rem;
-        height: 1.4rem;
-        width: 1.4rem;
-        border-radius: 50%;
-        opacity: .8;
-      }
-
-      &:before {
-        border: $border-width solid $option-color;
-        transition: border-color .2s ease;
-        transform: translate(50%,-50%);
-      }
-
-      &:after {
-        background-color: transparent;
-        transition: background-color .2s ease;
-        transform: translate(50%,-50%) scale(0.5);
-      }
-
-      &--active {
-        &:before {
-          border-color: $option-color--active;
-        }
-
-        &:after {
-          background-color: $option-color--active;
-        }
-      }
-    }
-  }
-
   &__header {
     position: relative;
     width: 100%;
@@ -184,14 +143,22 @@
     max-height: 40rem;
     overflow: auto;
     z-index: 150;
+  }
+
+  &__item {
+    position: relative;
 
     input[type="radio"],
     input[type="checkbox"] {
       position: absolute;
+      top: 0;
       left: 0;
       height: 0;
       width: 0;
       opacity: 0;
+      padding: 0;
+      border: 0;
+      margin: 0;
 
       &:not([disabled]) {
         + #{$parent} {
@@ -237,7 +204,7 @@
   }
 
   &__option {
-    display: block;
+    display: block!important;
     position: relative;
     z-index: 1;
     user-select: none;
@@ -245,6 +212,8 @@
     margin-bottom: 0!important;
     color: inherit;
     background-color: $option-background-color;
-    transition: background-color $option-transition-speed ease, color $option-transition-speed ease;
+    transition: 
+      color $option-transition-speed ease,
+      background-color $option-transition-speed ease;
   }
 }

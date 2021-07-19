@@ -31,7 +31,7 @@ var SimpleSelector = /*#__PURE__*/function () {
 
     this.active = false; // This will be used to trigger a change event on the real select element
 
-    this.trigger = new _meteora.Event('change'); // Disable all inputs to keep form submissions clean
+    this.change = new _meteora.Event('change'); // Disable all inputs to keep form submissions clean
 
     this.disable = null; // The default select element
 
@@ -185,8 +185,10 @@ var SimpleSelector = /*#__PURE__*/function () {
 
 
       this.options.forEach(function (option, index) {
-        // Tab Accessibility
-        option.input.setAttribute('tabindex', "0"); // When we click the option we need to change the real select's value
+        // Create a new group div to hold the input and label
+        var group = document.createElement('div'); // Set a class for the group element
+
+        group.className = "".concat(_this2.settings["class"], "__item"); // When we click the option we need to change the real select's value
 
         option.input.addEventListener('change', function (e) {
           e.preventDefault(); // If this is a multi select toggle the option selected state
@@ -222,7 +224,7 @@ var SimpleSelector = /*#__PURE__*/function () {
             } // Trigger the change event on the default select
 
 
-          _this2["default"].select.dispatchEvent(_this2.trigger);
+          _this2["default"].select.dispatchEvent(_this2.change);
         }); // If we want it to autoClose and it is not a multi select, then close after selecting an option
 
         if (_this2["default"].select.type == 'select-one' && _this2.settings.autoClose) {
@@ -238,11 +240,13 @@ var SimpleSelector = /*#__PURE__*/function () {
         } // Add the new option element to the template object and list element
 
 
-        _this2.template.options.push(option.input);
+        _this2.template.options.push(option.input); // Put the input / label into the group element
 
-        _this2.template.list.appendChild(option.input);
 
-        _this2.template.list.appendChild(option.label);
+        group.appendChild(option.input);
+        group.appendChild(option.label); // Put the new group into the list
+
+        _this2.template.list.appendChild(group);
       }); // Run the reinit callback
 
       this.callback('reinit', this);
