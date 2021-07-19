@@ -270,7 +270,9 @@ var SimpleSelector = /*#__PURE__*/function () {
   }, {
     key: "open",
     value: function open() {
-      // Add the active state
+      // Scroll the list to the top
+      this.template.list.scrollTo(0, 0); // Add the active state
+
       this.select.classList.add("".concat(this.settings["class"], "--active")); // Activate the select state
 
       this.active = true; // Run the open callback

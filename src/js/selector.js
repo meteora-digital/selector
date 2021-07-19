@@ -259,6 +259,9 @@ export default class SimpleSelector {
   }
 
   open() {
+    // Scroll the list to the top
+    this.template.list.scrollTo(0,0);
+
     // Add the active state
     this.select.classList.add(`${this.settings.class}--active`);
 
