@@ -31,7 +31,9 @@ var SimpleSelector = /*#__PURE__*/function () {
 
     this.active = false; // This will be used to trigger a change event on the real select element
 
-    this.trigger = new _meteora.Event('change'); // The default select element
+    this.trigger = new _meteora.Event('change'); // Disable all inputs to keep form submissions clean
+
+    this.disable = null; // The default select element
 
     this["default"] = {
       select: select,
@@ -109,7 +111,7 @@ var SimpleSelector = /*#__PURE__*/function () {
     }); // When the header is focused if we hit enter
 
     this.template.header.addEventListener('keypress', function (e) {
-      if (e.keyCode === 13) {
+      if (e.keyCode === 13 || e.keyCode === 32) {
         e.preventDefault();
         _this.active ? _this.close() : _this.open();
       }
@@ -167,15 +169,17 @@ var SimpleSelector = /*#__PURE__*/function () {
             // Add it to the new input option
             input.setAttribute(attribute.nodeName, attribute.nodeValue);
           }
-        } // If the option is disabled, we need to reflect that on the new one
+        } // Disable all inputs when the selector is closed
 
 
-        input.disabled = option.disabled; // Add this new option to the template options array
+        input.disabled = true; // Add this new option to the template options array
 
         this.options.push({
           "default": option,
           input: input,
-          label: label
+          label: label,
+          // If the option is disabled, we need to reflect that on the new one
+          disabled: option.disabled
         });
       } // For all the new options
 
@@ -225,7 +229,7 @@ var SimpleSelector = /*#__PURE__*/function () {
           // If we press enter on an input
           option.input.addEventListener('keypress', function (e) {
             e.preventDefault();
-            if (e.keyCode === 13) _this2.close();
+            if (e.keyCode === 13 || e.keyCode === 32) _this2.close();
           }); // When we click the label we want something to happen
 
           option.label.addEventListener('click', function () {
@@ -293,18 +297,32 @@ var SimpleSelector = /*#__PURE__*/function () {
   }, {
     key: "open",
     value: function open() {
-      // Scroll the list to the top
+      // Keep the select enabled
+      clearTimeout(this.disable); // Scroll the list to the top
+
       this.template.list.scrollTo(0, 0); // Add the active state
 
       this.select.classList.add("".concat(this.settings["class"], "--active")); // Activate the select state
 
-      this.active = true; // Run the open callback
+      this.active = true; // Enable all allowed inputs
+
+      this.options.forEach(function (option) {
+        return option.input.disabled = option.disabled;
+      }); // Find the enabled inputs
+
+      var enabled = this.options.filter(function (option) {
+        return option.disabled == false;
+      }); // If there are any enabled inputs focus on the first one
+
+      if (enabled.length) enabled[0].input.focus(); // Run the open callback
 
       this.callback('open', this);
     }
   }, {
     key: "close",
     value: function close() {
+      var _this3 = this;
+
       // Remove the active state
       this.select.classList.remove("".concat(this.settings["class"], "--active")); // Clear the search
 
@@ -315,7 +333,13 @@ var SimpleSelector = /*#__PURE__*/function () {
 
       ; // Deactivate the select state
 
-      this.active = false; // Run the close callback
+      this.active = false; // Disable all the inputs
+
+      this.disable = setTimeout(function () {
+        _this3.options.forEach(function (option) {
+          return option.input.disabled = true;
+        });
+      }, 100); // Run the close callback
 
       this.callback('close', this);
     } // Filters the options by looking for a specific string
@@ -323,7 +347,7 @@ var SimpleSelector = /*#__PURE__*/function () {
   }, {
     key: "filter",
     value: function filter() {
-      var _this3 = this;
+      var _this4 = this;
 
       var string = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
       // Loop through all the options
@@ -331,11 +355,11 @@ var SimpleSelector = /*#__PURE__*/function () {
         // If the option's text content matches our search query, or if the search query is empty
         if (option.input.textContent.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
           // Remove the hidden class
-          option.input.classList.remove("".concat(_this3.settings["class"], "--hidden"));
+          option.input.classList.remove("".concat(_this4.settings["class"], "--hidden"));
         } // Otherwise
         else {
             // Add a hidden class
-            option.input.classList.add("".concat(_this3.settings["class"], "--hidden"));
+            option.input.classList.add("".concat(_this4.settings["class"], "--hidden"));
           }
       }); // Run the filter callback
 

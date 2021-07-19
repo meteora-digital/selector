@@ -18,6 +18,8 @@ export default class SimpleSelector {
     this.active = false;
     // This will be used to trigger a change event on the real select element
     this.trigger = new Event('change');
+    // Disable all inputs to keep form submissions clean
+    this.disable = null;
 
     // The default select element
     this.default = {
@@ -102,7 +104,7 @@ export default class SimpleSelector {
 
     // When the header is focused if we hit enter
     this.template.header.addEventListener('keypress', (e) => {
-      if (e.keyCode === 13) {
+      if (e.keyCode === 13 || e.keyCode === 32) {
         e.preventDefault();
         (this.active) ? this.close() : this.open();
       }
@@ -166,14 +168,16 @@ export default class SimpleSelector {
         }
       }
 
-      // If the option is disabled, we need to reflect that on the new one
-      input.disabled = (option.disabled);
+      // Disable all inputs when the selector is closed
+      input.disabled = true;
 
       // Add this new option to the template options array
       this.options.push({
         default: option,
         input: input,
         label: label,
+        // If the option is disabled, we need to reflect that on the new one
+        disabled: option.disabled,
       });
     }
 
@@ -220,14 +224,12 @@ export default class SimpleSelector {
         // If we press enter on an input
         option.input.addEventListener('keypress', (e) => {
           e.preventDefault();
-          if (e.keyCode === 13) this.close();
+          if (e.keyCode === 13 || e.keyCode === 32) this.close();
         });
 
         // When we click the label we want something to happen
         option.label.addEventListener('click', () => this.close());
       }
-
-
 
       // Add the new option element to the template object and list element
       this.template.options.push(option.input);
@@ -286,6 +288,9 @@ export default class SimpleSelector {
   }
 
   open() {
+    // Keep the select enabled
+    clearTimeout(this.disable);
+
     // Scroll the list to the top
     this.template.list.scrollTo(0,0);
 
@@ -294,6 +299,15 @@ export default class SimpleSelector {
 
     // Activate the select state
     this.active = true;
+
+    // Enable all allowed inputs
+    this.options.forEach((option) => option.input.disabled = option.disabled);
+
+    // Find the enabled inputs
+    const enabled = this.options.filter((option) => option.disabled == false);
+
+    // If there are any enabled inputs focus on the first one
+    if (enabled.length) enabled[0].input.focus();
 
     // Run the open callback
     this.callback('open', this);
@@ -311,6 +325,11 @@ export default class SimpleSelector {
 
     // Deactivate the select state
     this.active = false;
+
+    // Disable all the inputs
+    this.disable = setTimeout(() => {
+      this.options.forEach((option) => option.input.disabled = true);
+    }, 100);
 
     // Run the close callback
     this.callback('close', this);
