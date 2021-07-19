@@ -108,8 +108,8 @@ export default class SimpleSelector {
     this.default.options = this.default.select.children;
 
     // Remove the current options from the list
-    for (var i = 0; i < this.template.list.children.length; i++) {
-      this.template.list.removeChild(this.template.list.children[i]);
+    for (let i = 0; i < this.options.length; i++) {
+      this.template.list.removeChild(this.options[i]);
     }
 
     // Reset the options
@@ -188,7 +188,6 @@ export default class SimpleSelector {
         }
         // Otherwise select just the one item
         else {
-          
           this.default.select.selectedIndex = index;
         }
 

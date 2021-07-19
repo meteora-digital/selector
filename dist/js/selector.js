@@ -117,8 +117,8 @@ var SimpleSelector = /*#__PURE__*/function () {
       // Find all the options in the real select element
       this["default"].options = this["default"].select.children; // Remove the current options from the list
 
-      for (var i = 0; i < this.template.list.children.length; i++) {
-        this.template.list.removeChild(this.template.list.children[i]);
+      for (var i = 0; i < this.options.length; i++) {
+        this.template.list.removeChild(this.options[i]);
       } // Reset the options
 
 
