@@ -68,7 +68,9 @@ export default class SimpleSelector {
     // If we have search enabled
     if (this.settings.search) {
       // The search input is a text input
-      this.template.search.type = 'text',
+      this.template.search.type = 'text';
+      // The search input placeholder text
+      this.template.search.placeholder = 'Search';
       // Put the search input into the select list
       this.template.list.appendChild(this.template.search);
       // When we type in the search input, we need to filter the options
@@ -289,7 +291,7 @@ export default class SimpleSelector {
     // Loop through all the options
     this.options.forEach((option) => {
       // If the option's text content matches our search query, or if the search query is empty
-      if (option.textContent.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
+      if (option.element.textContent.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
         // Remove the hidden class
         option.element.classList.remove(`${this.settings.class}--hidden`);
       }
