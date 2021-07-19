@@ -4,13 +4,16 @@ Simple Selector is an es6 class used to create easily styleable select input. Si
 
 ## Installation
 
-with webpack
-
 ```bash
+npm i simple-selector
 yarn add simple-selector
 ```
 
 ##### Note: Version 2.0.0+ includes breaking changes. You will need to update your working environment to reflect this update, or continue using the latest 1.5.0 release.
+
+```bash
+npm i simple-selector@1.5.0
+```
 
 ## Usage
 
