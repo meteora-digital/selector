@@ -1,6 +1,6 @@
 # Simple Selector
 
-Simple Selector is an es6 class used to create easily styleable select input. Simple Selector will create an HTML template that takes the place of your standard <select> tag.
+Simple Selector is an es6 class used to create easily styleable select input. Simple Selector will create an HTML template that takes the place of your standard <select></select> tag.
 
 ## Installation
 
@@ -36,14 +36,6 @@ select.addEventListener('change', () => {
 
 ```
 
-## Update the options dynamically
-
-If the options in the default select have been updated dynamically, simply call
-
-```es6
-SimpleSelector.update();
-```
-
 ## Options
 
 | Option | Type | Description |
@@ -51,8 +43,34 @@ SimpleSelector.update();
 | search | Boolean or String (default: 'Search') | True / False to enable / disable String will be true and change the placeholder text. |
 | class | String (default: 'selector') | If you want more than one style of selector, you can change this class to suit your needs |
 | placeholder | String (default: placeholder attribute or 'Select') | Will update the default text on the Simple Selector |
-| multiple | Boolean (default: false) | Toogles the multiselect attribute |
 | autoClose | Boolean (default: true) | When multiple is false, autoClose: true will close the Selector when an option is clicked |
+
+# Methods
+
+## Update the options dynamically
+
+If the options in the default select have been updated dynamically, simply call the reinit() method.
+You may also optionally need to call the update() method
+
+```es6
+SimpleSelector.reinit();
+SimpleSelector.update();
+```
+
+## Callbacks
+
+Each of the following methods has a callback. These can be used with the on() method
+ - reinit
+ - update
+ - open
+ - close
+ - filter
+
+```es6
+SimpleSelector.on('update', (selector) => {
+    console.log('selector updated!');
+});
+```
 
 ## SCSS Mixin - defaults
 
