@@ -1,6 +1,6 @@
 # Simple Selector
 
-Simple Selector is an es6 class used to create easily styleable select input. Simple Selector will create an HTML template that takes the place of your standard select tag.
+Simple Selector is an es6 class used to create easily styleable select input. Simple Selector will create an HTML template that visually takes the place of your standard select tag.
 
 ## Installation
 
@@ -26,19 +26,13 @@ npm i simple-selector@1.5.0
 ```
 
 ```es6
-import Selector from 'simple-selector';
+import SimpleSelector from 'simple-selector';
 
 const select = document.querySelector('.js-select');
 
-const SimpleSelector = new Selector(select, {
-    search: true, 
+const Selector = new SimpleSelector(select, {
     placeholder: 'Select your favourite.',
 });
-
-select.addEventListener('change', () => {
-	console.log(select.value, SimpleSelector.value());
-});
-
 ```
 
 ## Options
@@ -51,6 +45,8 @@ select.addEventListener('change', () => {
 | autoClose | Boolean (default: true) | When multiple is false, autoClose: true will close the Selector when an option is clicked |
 
 # Methods
+
+#### The majority of the SimpleSelector functionality should happen automatically, although you may need to take control manually on some occations.
 
 ## Update the options dynamically
 
