@@ -109,7 +109,7 @@ export default class SimpleSelector {
 
     // Remove the current options from the list
     for (let i = 0; i < this.options.length; i++) {
-      this.template.list.removeChild(this.options[i]);
+      this.template.list.removeChild(this.options[i].element);
     }
 
     // Reset the options

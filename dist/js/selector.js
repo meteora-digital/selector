@@ -118,7 +118,7 @@ var SimpleSelector = /*#__PURE__*/function () {
       this["default"].options = this["default"].select.children; // Remove the current options from the list
 
       for (var i = 0; i < this.options.length; i++) {
-        this.template.list.removeChild(this.options[i]);
+        this.template.list.removeChild(this.options[i].element);
       } // Reset the options
 
 
