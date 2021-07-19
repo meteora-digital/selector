@@ -218,11 +218,21 @@ var SimpleSelector = /*#__PURE__*/function () {
             } // Trigger the change event on the default select
 
 
-          _this2["default"].select.dispatchEvent(_this2.trigger); // If we want it to autoClose and it is not a multi select, then close after selecting an option
+          _this2["default"].select.dispatchEvent(_this2.trigger);
+        }); // If we want it to autoClose and it is not a multi select, then close after selecting an option
 
+        if (_this2["default"].select.type == 'select-one' && _this2.settings.autoClose) {
+          // If we press enter on an input
+          option.input.addEventListener('keypress', function (e) {
+            e.preventDefault();
+            if (e.keyCode === 13) _this2.close();
+          }); // When we click the label we want something to happen
 
-          if (_this2["default"].select.type == 'select-one' && _this2.settings.autoClose) _this2.close();
-        }); // Add the new option element to the template object and list element
+          option.label.addEventListener('click', function () {
+            return _this2.close();
+          });
+        } // Add the new option element to the template object and list element
+
 
         _this2.template.options.push(option.input);
 

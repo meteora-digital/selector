@@ -213,10 +213,21 @@ export default class SimpleSelector {
 
         // Trigger the change event on the default select
         this.default.select.dispatchEvent(this.trigger);
-
-        // If we want it to autoClose and it is not a multi select, then close after selecting an option
-        if (this.default.select.type == 'select-one' && this.settings.autoClose) this.close();
       });
+
+      // If we want it to autoClose and it is not a multi select, then close after selecting an option
+      if (this.default.select.type == 'select-one' && this.settings.autoClose) {
+        // If we press enter on an input
+        option.input.addEventListener('keypress', (e) => {
+          e.preventDefault();
+          if (e.keyCode === 13) this.close();
+        });
+
+        // When we click the label we want something to happen
+        option.label.addEventListener('click', () => this.close());
+      }
+
+
 
       // Add the new option element to the template object and list element
       this.template.options.push(option.input);
