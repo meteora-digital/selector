@@ -124,7 +124,7 @@ export default class SimpleSelector {
 
     // Remove the current options from the list
     for (let i = 0; i < this.options.length; i++) {
-      this.template.list.removeChild(this.options[i].element);
+      this.template.list.removeChild(this.options[i].field);
     }
 
     // Reset the options
@@ -184,10 +184,10 @@ export default class SimpleSelector {
     // For all the new options
     this.options.forEach((option, index) => {
       // Create a new group div to hold the input and label
-      const group = document.createElement('div');
+      option.field = document.createElement('div');
 
       // Set a class for the group element
-      group.className = `${this.settings.class}__item`;
+      option.field.className = `${this.settings.class}__item`;
 
       // When we click the option we need to change the real select's value
       option.input.addEventListener('change', (e) => {
@@ -238,11 +238,11 @@ export default class SimpleSelector {
       this.template.options.push(option.input);
 
       // Put the input / label into the group element
-      group.appendChild(option.input);
-      group.appendChild(option.label);
+      option.field.appendChild(option.input);
+      option.field.appendChild(option.label);
 
       // Put the new group into the list
-      this.template.list.appendChild(group);
+      this.template.list.appendChild(option.field);
     });
 
     // Run the reinit callback
@@ -262,8 +262,12 @@ export default class SimpleSelector {
       if (option.default.selected) {
         // Activate the input
         option.input.checked = true;
-        // Push this option value to the selection
-        this.selection.push(option);
+
+        // If the deafult option has a real value
+        if (option.default.value != "") {
+          // Push this option value to the selection
+          this.selection.push(option);
+        }
       } else {
         // Deactivate the input
         option.input.checked = false;

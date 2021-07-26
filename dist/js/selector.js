@@ -132,7 +132,7 @@ var SimpleSelector = /*#__PURE__*/function () {
       this["default"].options = this["default"].select.children; // Remove the current options from the list
 
       for (var i = 0; i < this.options.length; i++) {
-        this.template.list.removeChild(this.options[i].element);
+        this.template.list.removeChild(this.options[i].field);
       } // Reset the options
 
 
@@ -186,9 +186,9 @@ var SimpleSelector = /*#__PURE__*/function () {
 
       this.options.forEach(function (option, index) {
         // Create a new group div to hold the input and label
-        var group = document.createElement('div'); // Set a class for the group element
+        option.field = document.createElement('div'); // Set a class for the group element
 
-        group.className = "".concat(_this2.settings["class"], "__item"); // When we click the option we need to change the real select's value
+        option.field.className = "".concat(_this2.settings["class"], "__item"); // When we click the option we need to change the real select's value
 
         option.input.addEventListener('change', function (e) {
           e.preventDefault(); // If this is a multi select toggle the option selected state
@@ -243,10 +243,10 @@ var SimpleSelector = /*#__PURE__*/function () {
         _this2.template.options.push(option.input); // Put the input / label into the group element
 
 
-        group.appendChild(option.input);
-        group.appendChild(option.label); // Put the new group into the list
+        option.field.appendChild(option.input);
+        option.field.appendChild(option.label); // Put the new group into the list
 
-        _this2.template.list.appendChild(group);
+        _this2.template.list.appendChild(option.field);
       }); // Run the reinit callback
 
       this.callback('reinit', this);
@@ -263,9 +263,12 @@ var SimpleSelector = /*#__PURE__*/function () {
 
         if (option["default"].selected) {
           // Activate the input
-          option.input.checked = true; // Push this option value to the selection
+          option.input.checked = true; // If the deafult option has a real value
 
-          this.selection.push(option);
+          if (option["default"].value != "") {
+            // Push this option value to the selection
+            this.selection.push(option);
+          }
         } else {
           // Deactivate the input
           option.input.checked = false;
