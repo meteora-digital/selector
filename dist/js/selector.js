@@ -307,7 +307,7 @@ var SimpleSelector = /*#__PURE__*/function () {
       // Keep the select enabled
       clearTimeout(this.disable); // Scroll the list to the top
 
-      this.template.list.scrollTo(0, 0); // Add the active state
+      this.template.list.scrollTop = 0; // Add the active state
 
       this.select.classList.add("".concat(this.settings["class"], "--active")); // Activate the select state
 
