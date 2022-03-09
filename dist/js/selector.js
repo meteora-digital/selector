@@ -5,17 +5,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _meteora = require("meteora");
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-/*------------------------------------------------------------------
-Simple Selector
-------------------------------------------------------------------*/
 var SimpleSelector = /*#__PURE__*/function () {
   function SimpleSelector(select) {
     var _this = this;
@@ -29,9 +24,7 @@ var SimpleSelector = /*#__PURE__*/function () {
 
     this.selection = []; // The active state for the select
 
-    this.active = false; // This will be used to trigger a change event on the real select element
-
-    this.change = new _meteora.Event('change'); // Disable all inputs to keep form submissions clean
+    this.active = false; // Disable all inputs to keep form submissions clean
 
     this.disable = null; // The default select element
 
@@ -100,7 +93,16 @@ var SimpleSelector = /*#__PURE__*/function () {
     if (this.settings.autoClose) {
       // If we have clicked somewhere else on the page then close the select
       window.addEventListener('click', function (e) {
-        if (!(0, _meteora.relativeTarget)(e.target, _this.select)) _this.close();
+        var parent = e.target.parentNode;
+
+        if (e.target !== _this.select) {
+          while (parent && parent !== _this.select) {
+            parent = parent.parentNode;
+          } // If we didnt click on the selector, close it
+
+
+          if (parent !== _this.select) _this.close();
+        }
       });
     } // Clicking the header should open / close the select list
 
@@ -128,7 +130,16 @@ var SimpleSelector = /*#__PURE__*/function () {
     value: function reinit() {
       var _this2 = this;
 
-      // Find all the options in the real select element
+      try {
+        // This will be used to trigger a change event on the real select element
+        this.change = new Event('change');
+      } catch (err) {
+        var event = document.createEvent('CustomEvent');
+        event.initCustomEvent('change', false, false, undefined);
+        this.change = event;
+      } // Find all the options in the real select element
+
+
       this["default"].options = this["default"].select.children; // Remove the current options from the list
 
       for (var i = 0; i < this.options.length; i++) {
@@ -198,25 +209,25 @@ var SimpleSelector = /*#__PURE__*/function () {
             if (option["default"].value == "") {
               // Deselect all selected items
               _this2.options.filter(function (item) {
-                return item["default"].getAttribute('selected');
+                return item["default"].selected == true;
               }).forEach(function (item) {
-                return item["default"].removeAttribute('selected');
+                return item["default"].selected = false;
               });
             } else {
               // Deselect the item with no value
               _this2.options.filter(function (item) {
                 return item["default"].value == '';
               }).forEach(function (item) {
-                return item["default"].removeAttribute('selected');
+                return item["default"].selected = false;
               });
             } // If the option is selected, deselect it
 
 
             if (option.input.checked) {
-              option["default"].setAttribute('selected', 'selected');
+              option["default"].selected = true;
             } // Otherwise select it
             else {
-                option["default"].removeAttribute('selected');
+                option["default"].selected = false;
               }
           } // Otherwise select just the one item
           else {

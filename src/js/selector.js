@@ -1,13 +1,3 @@
-/*------------------------------------------------------------------
-Import modules
-------------------------------------------------------------------*/
-
-import { relativeTarget, Event } from 'meteora';
-
-/*------------------------------------------------------------------
-Simple Selector
-------------------------------------------------------------------*/
-
 export default class SimpleSelector {
   constructor(select, options = {}) {
     // The Simple Selector events will be store here
@@ -16,8 +6,6 @@ export default class SimpleSelector {
     this.selection = [];
     // The active state for the select
     this.active = false;
-    // This will be used to trigger a change event on the real select element
-    this.change = new Event('change');
     // Disable all inputs to keep form submissions clean
     this.disable = null;
 
@@ -92,7 +80,16 @@ export default class SimpleSelector {
     if (this.settings.autoClose) {
       // If we have clicked somewhere else on the page then close the select
       window.addEventListener('click', (e) => {
-        if (!relativeTarget(e.target, this.select)) this.close();
+        let parent = e.target.parentNode;
+
+        if (e.target !== this.select) {
+          while (parent && parent !== this.select) {
+            parent = parent.parentNode;
+          }
+
+          // If we didnt click on the selector, close it
+          if (parent !== this.select) this.close();
+        }
       });
     }
 
@@ -119,6 +116,15 @@ export default class SimpleSelector {
   }
 
   reinit() {
+    try {
+      // This will be used to trigger a change event on the real select element
+      this.change = new Event('change');
+    } catch (err) {
+      let event = document.createEvent('CustomEvent');
+      event.initCustomEvent('change', false, false, undefined);
+      this.change = event;
+    }
+
     // Find all the options in the real select element
     this.default.options = this.default.select.children;
 
@@ -198,19 +204,19 @@ export default class SimpleSelector {
           // If this option has no value
           if (option.default.value == "") {
             // Deselect all selected items
-            this.options.filter((item) => item.default.getAttribute('selected')).forEach((item) => item.default.removeAttribute('selected'));
+            this.options.filter((item) => item.default.selected == true).forEach((item) => item.default.selected = false);
           } else {
             // Deselect the item with no value
-            this.options.filter((item) => item.default.value == '').forEach((item) => item.default.removeAttribute('selected'));
+            this.options.filter((item) => item.default.value == '').forEach((item) => item.default.selected = false);
           }
 
           // If the option is selected, deselect it
           if (option.input.checked) {
-            option.default.setAttribute('selected', 'selected');
+            option.default.selected = true;
           }
           // Otherwise select it
           else {
-            option.default.removeAttribute('selected');
+            option.default.selected = false;
           }
         }
         // Otherwise select just the one item
