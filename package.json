@@ -1,6 +1,6 @@
 {
   "name": "simple-selector",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "An es6 class to replace default select inputs with easy to style HTML.",
   "main": "dist/js/selector.js",
   "scripts": {
