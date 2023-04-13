@@ -331,7 +331,7 @@ export default class SimpleSelectorController {
       }
 
       // If the option is disabled
-      if (option.disabled) {
+      if (option.default.disabled) {
         // Disable the input
         option.input.disabled = true;
       } else {
