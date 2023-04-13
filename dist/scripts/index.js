@@ -209,7 +209,10 @@ var SimpleSelectorController = /*#__PURE__*/function () {
 
           var input = document.createElement('input'); // Create a new label
 
-          var label = document.createElement('label'); // Set the type based on the type of select
+          var label = document.createElement('label'); // Find the index of the option in the real select
+
+          var index = _toConsumableArray(_this2["default"].select.options).indexOf(option); // Set the type based on the type of select
+
 
           input.type = _this2["default"].select.type == 'select-one' ? 'radio' : 'checkbox'; // Add the value to the input option
 
@@ -217,13 +220,13 @@ var SimpleSelectorController = /*#__PURE__*/function () {
 
           input.name = _this2.id; // The input ID
 
-          input.id = "".concat(_this2.id, "_").concat(g, "-").concat(_i); // Get the content of the real option and chuck it into the label
+          input.id = "".concat(_this2.id, "_").concat(index); // Get the content of the real option and chuck it into the label
 
           label.innerHTML = option.innerHTML; // Add a class to the input option
 
           label.className = "".concat(_this2.settings["class"], "__option"); // The label for attribute
 
-          label.htmlFor = "".concat(_this2.id, "_").concat(g, "-").concat(_i); // Grab all the data attributes from the option and assign them to the new one
+          label.htmlFor = input.id; // Grab all the data attributes from the option and assign them to the new one
 
           for (var j = 0; j < option.attributes.length; j++) {
             // Save as an attribute
@@ -281,7 +284,7 @@ var SimpleSelectorController = /*#__PURE__*/function () {
                 }
             } // Otherwise select just the one item
             else {
-                _this2["default"].select.selectedIndex = _i;
+                _this2["default"].select.selectedIndex = index;
               } // Trigger the change event on the default select
 
 
@@ -291,12 +294,18 @@ var SimpleSelectorController = /*#__PURE__*/function () {
           if (_this2["default"].select.type == 'select-one' && _this2.settings.autoClose) {
             // If we press enter on an input
             optionObj.input.addEventListener('keypress', function (e) {
-              e.preventDefault();
-              if (e.keyCode === 13 || e.keyCode === 32) _this2.close();
+              e.preventDefault(); // If we press enter or escape
+
+              if (e.key == 'Enter' || e.key == 'Escape') {
+                // Close the select
+                _this2.close();
+              }
             }); // When we click the label we want something to happen
 
             optionObj.label.addEventListener('click', function () {
-              return _this2.close();
+              console.log(optionObj);
+
+              _this2.close();
             });
           } // Add the new option element to the template object and list element
 
@@ -427,8 +436,7 @@ var SimpleSelectorController = /*#__PURE__*/function () {
       var string = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
       // Loop through all the options
       this.options.forEach(function (option) {
-        console.log(option); // If the option's text content matches our search query, or if the search query is empty
-
+        // If the option's text content matches our search query, or if the search query is empty
         if (option.input.value.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
           // Remove the hidden class
           option.field.classList.remove("".concat(_this4.settings["class"], "__item--hidden"));

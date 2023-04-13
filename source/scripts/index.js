@@ -188,6 +188,8 @@ export default class SimpleSelectorController {
         const input = document.createElement('input');
         // Create a new label
         const label = document.createElement('label');
+        // Find the index of the option in the real select
+        const index = [...this.default.select.options].indexOf(option);
 
         // Set the type based on the type of select
         input.type = (this.default.select.type == 'select-one') ? 'radio' : 'checkbox';
@@ -196,14 +198,14 @@ export default class SimpleSelectorController {
         // The input name
         input.name = this.id;
         // The input ID
-        input.id = `${this.id}_${g}-${i}`;
+        input.id = `${this.id}_${index}`;
 
         // Get the content of the real option and chuck it into the label
         label.innerHTML = option.innerHTML;
         // Add a class to the input option
         label.className = `${this.settings.class}__option`;
         // The label for attribute
-        label.htmlFor = `${this.id}_${g}-${i}`;
+        label.htmlFor = input.id;
 
         // Grab all the data attributes from the option and assign them to the new one
         for (let j = 0; j < option.attributes.length; j++) {
@@ -262,7 +264,7 @@ export default class SimpleSelectorController {
           }
           // Otherwise select just the one item
           else {
-            this.default.select.selectedIndex = i;
+            this.default.select.selectedIndex = index;
           }
 
           // Trigger the change event on the default select
@@ -274,11 +276,18 @@ export default class SimpleSelectorController {
           // If we press enter on an input
           optionObj.input.addEventListener('keypress', (e) => {
             e.preventDefault();
-            if (e.keyCode === 13 || e.keyCode === 32) this.close();
+            // If we press enter or escape
+            if (e.key == 'Enter' || e.key == 'Escape') {
+              // Close the select
+              this.close();
+            }
           });
 
           // When we click the label we want something to happen
-          optionObj.label.addEventListener('click', () => this.close());
+          optionObj.label.addEventListener('click', () => {
+            console.log(optionObj);
+            this.close();
+          });
         }
 
         // Add the new option element to the template object and list element
@@ -399,7 +408,6 @@ export default class SimpleSelectorController {
   filter(string = '') {
     // Loop through all the options
     this.options.forEach((option) => {
-      console.log(option);
       // If the option's text content matches our search query, or if the search query is empty
       if (option.input.value.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
         // Remove the hidden class
