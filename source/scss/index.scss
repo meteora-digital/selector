@@ -7,17 +7,17 @@
   $split-arr: ();
   $index : str-index($classlist, " ");
 
-    // loop through string
-    @while $index != null {
-      $item: str-slice($classlist, 1, $index - 1);
-      $split-arr: append($split-arr, $item);
-      $classlist: str-slice($classlist, $index + 1);
-      $index : str-index($classlist, " ");
-    }
-
-    $split-arr: append($split-arr, $classlist);
-    @return nth($classlist, length($classlist));
+  // loop through string
+  @while $index != null {
+    $item: str-slice($classlist, 1, $index - 1);
+    $split-arr: append($split-arr, $item);
+    $classlist: str-slice($classlist, $index + 1);
+    $index : str-index($classlist, " ");
   }
+
+  $split-arr: append($split-arr, $classlist);
+  @return nth($classlist, length($classlist));
+}
 
 // ======================================
 // Styles ===============================
@@ -38,6 +38,8 @@
   $search-color: #000,
   $search-border-color: rgba(#000, .2),
   $search-background-color: #fff,
+  $group-color: #000,
+  $group-background-color: #fff,
   $option-color: #000,
   $option-background-color: #fff,
   $option-transition-speed: 0.3s,
@@ -196,6 +198,7 @@
     }
   }
 
+  &__group,
   &__option {
     display: block!important;
     position: relative;
@@ -204,9 +207,19 @@
     padding: 10px 20px!important;
     margin-bottom: 0!important;
     color: inherit;
+  }
+
+  &__group {
+    color: $group-color;
+    font-weight: bold;
+    background-color: $group-background-color;
+  }
+
+  &__option {
     background-color: $option-background-color;
     transition: 
       color $option-transition-speed ease,
       background-color $option-transition-speed ease;
+
   }
 }

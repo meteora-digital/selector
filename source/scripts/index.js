@@ -33,6 +33,8 @@ export default class SimpleSelector {
 
     // The new select element
     this.select = document.createElement('div');
+    // This will hold our groups
+    this.optgroups = {};
     // This will hold our options
     this.options = [];
 
@@ -125,131 +127,173 @@ export default class SimpleSelector {
       this.change = event;
     }
 
-    // Find all the options in the real select element
-    this.default.options = this.default.select.children;
+    // Find all the optgroups in the real select element
+    this.default.optgroups = (this.default.select.querySelector('optgroup')) ? this.default.select.querySelectorAll('optgroup') : false;
+
+    // If we have optgroups
+    if (this.default.optgroups) {
+      for (let i = 0; i < this.default.optgroups.length; i++) {
+        const optgroup = this.default.optgroups[i];
+        const label = optgroup.getAttribute('label');
+
+        this.optgroups[i] = {
+          label: label,
+          options: optgroup.children || [],
+        }
+      }
+    } else {
+      this.optgroups[0] = {
+        label: false,
+        options: this.default.select.children || [],
+      };
+    }
+
+    console.log('this.optgroups: ', this.optgroups);
 
     // Remove the current options from the list
-    for (let i = 0; i < this.options.length; i++) {
-      this.template.list.removeChild(this.options[i].field);
-    }
+    this.template.list.innerHTML = '';
+    // for (let i = 0; i < this.options.length; i++) {
+    // }
 
     // Reset the options
     this.options = [];
     this.template.options = [];
 
-    // Loop all the option elements and add a new input to our select
-    for (let i = 0; i < this.default.options.length; i++) {
-      // Save it as an option
-      const option = this.default.options[i];
-      // Create our new option element
-      const input = document.createElement('input');
-      // Create a new label
-      const label =  document.createElement('label');
+    // Loop the option groups
+    for (let g = 0; g < Object.keys(this.optgroups).length; g++) {
+      // Save the optgroup as a variable
+      const optgroup = this.optgroups[g];
 
-      // Set the type based on the type of select
-      input.type = (this.default.select.type == 'select-one') ? 'radio' : 'checkbox';
-      // Add the value to the input option
-      input.value = option.value;
-      // The input name
-      input.name = this.id;
-      // The input ID
-      input.id = `${this.id}_${i}`;
+      console.log('optgroup: ', optgroup);
 
-      // Get the content of the real option and chuck it into the label
-      label.innerHTML = option.innerHTML;
-      // Add a class to the input option
-      label.className = `${this.settings.class}__option`;
-      // The label for attribute
-      label.htmlFor = `${this.id}_${i}`;
-
-      // Grab all the data attributes from the option and assign them to the new one
-      for (let j = 0; j < option.attributes.length; j++) {
-        // Save as an attribute
-        const attribute = option.attributes[i];
-
-        // If it is a data attribute
-        if (attribute && attribute.nodeName.indexOf('data-') > -1) {
-          // Add it to the new input option
-          input.setAttribute(attribute.nodeName, attribute.nodeValue);
-        }
+      // If the group has a label
+      if (optgroup.label) {
+        // Create a new div
+        const group = document.createElement('span');
+        // Add a class to the group
+        group.className = `${this.settings.class}__group`;
+        // Add the label to the group
+        group.innerHTML = optgroup.label;
+        // Add the group to the select list
+        this.template.list.appendChild(group);
       }
 
-      // Disable all inputs when the selector is closed
-      input.disabled = true;
+      // Loop all the option elements and add a new input to our select
+      for (let i = 0; i < optgroup.options.length; i++) {
+        // Set up a new option object
+        const optionObj = {};
+        // Save it as an option
+        const option = optgroup.options[i];
+        // Create our new option element
+        const input = document.createElement('input');
+        // Create a new label
+        const label = document.createElement('label');
 
-      // Add this new option to the template options array
-      this.options.push({
-        default: option,
-        input: input,
-        label: label,
+        console.log('option: ', option);
+
+        // Set the type based on the type of select
+        input.type = (this.default.select.type == 'select-one') ? 'radio' : 'checkbox';
+        // Add the value to the input option
+        input.value = option.value;
+        // The input name
+        input.name = this.id;
+        // The input ID
+        input.id = `${this.id}_${g}-${i}`;
+
+        // Get the content of the real option and chuck it into the label
+        label.innerHTML = option.innerHTML;
+        // Add a class to the input option
+        label.className = `${this.settings.class}__option`;
+        // The label for attribute
+        label.htmlFor = `${this.id}_${g}-${i}`;
+
+        // Grab all the data attributes from the option and assign them to the new one
+        for (let j = 0; j < option.attributes.length; j++) {
+          // Save as an attribute
+          const attribute = option.attributes[i];
+
+          // If it is a data attribute
+          if (attribute && attribute.nodeName.indexOf('data-') > -1) {
+            // Add it to the new input option
+            input.setAttribute(attribute.nodeName, attribute.nodeValue);
+          }
+        }
+
+        // Disable all inputs when the selector is closed
+        input.disabled = true;
+
+        // Add the data to the option object
+        optionObj.default = option;
+        optionObj.input = input;
+        optionObj.label = label;
         // If the option is disabled, we need to reflect that on the new one
-        disabled: option.disabled,
-      });
-    }
+        optionObj.disabled = option.disabled;
 
-    // For all the new options
-    this.options.forEach((option, index) => {
-      // Create a new group div to hold the input and label
-      option.field = document.createElement('div');
+        // Add this new option to the template options array
+        this.options.push(optionObj);
 
-      // Set a class for the group element
-      option.field.className = `${this.settings.class}__item`;
+        // Create a new group div to hold the input and label
+        optionObj.field = document.createElement('div');
 
-      // When we click the option we need to change the real select's value
-      option.input.addEventListener('change', (e) => {
-        e.preventDefault();
+        // Set a class for the group element
+        optionObj.field.className = `${this.settings.class}__item`;
 
-        // If this is a multi select toggle the option selected state
-        if (this.default.select.type == 'select-multiple') {
-          // If this option has no value
-          if (option.default.value == "") {
-            // Deselect all selected items
-            this.options.filter((item) => item.default.selected == true).forEach((item) => item.default.selected = false);
-          } else {
-            // Deselect the item with no value
-            this.options.filter((item) => item.default.value == '').forEach((item) => item.default.selected = false);
-          }
-
-          // If the option is selected, deselect it
-          if (option.input.checked) {
-            option.default.selected = true;
-          }
-          // Otherwise select it
-          else {
-            option.default.selected = false;
-          }
-        }
-        // Otherwise select just the one item
-        else {
-          this.default.select.selectedIndex = index;
-        }
-
-        // Trigger the change event on the default select
-        this.default.select.dispatchEvent(this.change);
-      });
-
-      // If we want it to autoClose and it is not a multi select, then close after selecting an option
-      if (this.default.select.type == 'select-one' && this.settings.autoClose) {
-        // If we press enter on an input
-        option.input.addEventListener('keypress', (e) => {
+        // When we click the option we need to change the real select's value
+        optionObj.input.addEventListener('change', (e) => {
           e.preventDefault();
-          if (e.keyCode === 13 || e.keyCode === 32) this.close();
+
+          // If this is a multi select toggle the option selected state
+          if (this.default.select.type == 'select-multiple') {
+            // If this option has no value
+            if (optionObj.default.value == "") {
+              // Deselect all selected items
+              this.options.filter((item) => item.default.selected == true).forEach((item) => item.default.selected = false);
+            } else {
+              // Deselect the item with no value
+              this.options.filter((item) => item.default.value == '').forEach((item) => item.default.selected = false);
+            }
+
+            // If the option is selected, deselect it
+            if (optionObj.input.checked) {
+              optionObj.default.selected = true;
+            }
+            // Otherwise select it
+            else {
+              optionObj.default.selected = false;
+            }
+          }
+          // Otherwise select just the one item
+          else {
+            this.default.select.selectedIndex = i;
+          }
+
+          // Trigger the change event on the default select
+          this.default.select.dispatchEvent(this.change);
         });
 
-        // When we click the label we want something to happen
-        option.label.addEventListener('click', () => this.close());
+        // If we want it to autoClose and it is not a multi select, then close after selecting an option
+        if (this.default.select.type == 'select-one' && this.settings.autoClose) {
+          // If we press enter on an input
+          optionObj.input.addEventListener('keypress', (e) => {
+            e.preventDefault();
+            if (e.keyCode === 13 || e.keyCode === 32) this.close();
+          });
+
+          // When we click the label we want something to happen
+          optionObj.label.addEventListener('click', () => this.close());
+        }
+
+        // Add the new option element to the template object and list element
+        this.template.options.push(optionObj.input);
+
+        // Put the input / label into the group element
+        optionObj.field.appendChild(optionObj.input);
+        optionObj.field.appendChild(optionObj.label);
+
+        // Put the new group into the list
+        this.template.list.appendChild(optionObj.field);
       }
-
-      // Add the new option element to the template object and list element
-      this.template.options.push(option.input);
-
-      // Put the input / label into the group element
-      option.field.appendChild(option.input);
-      option.field.appendChild(option.label);
-
-      // Put the new group into the list
-      this.template.list.appendChild(option.field);
-    });
+    };
 
     // Run the reinit callback
     this.callback('reinit', this);
