@@ -5,6 +5,18 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -158,21 +170,24 @@ var SimpleSelector = /*#__PURE__*/function () {
           label: false,
           options: this["default"].select.children || []
         };
-      }
+      } // Remove the current options from the list
 
-      console.log('this.optgroups: ', this.optgroups); // Remove the current options from the list
 
-      this.template.list.innerHTML = ''; // for (let i = 0; i < this.options.length; i++) {
-      // }
-      // Reset the options
+      _toConsumableArray(this.template.list.children).forEach(function (child) {
+        // If this is not the search input
+        if (child !== _this2.template.search) {
+          // Remove the child
+          _this2.template.list.removeChild(child);
+        }
+      }); // Reset the options
+
 
       this.options = [];
       this.template.options = []; // Loop the option groups
 
       for (var g = 0; g < Object.keys(this.optgroups).length; g++) {
         // Save the optgroup as a variable
-        var _optgroup = this.optgroups[g];
-        console.log('optgroup: ', _optgroup); // If the group has a label
+        var _optgroup = this.optgroups[g]; // If the group has a label
 
         if (_optgroup.label) {
           // Create a new div
@@ -194,8 +209,7 @@ var SimpleSelector = /*#__PURE__*/function () {
 
           var input = document.createElement('input'); // Create a new label
 
-          var label = document.createElement('label');
-          console.log('option: ', option); // Set the type based on the type of select
+          var label = document.createElement('label'); // Set the type based on the type of select
 
           input.type = _this2["default"].select.type == 'select-one' ? 'radio' : 'checkbox'; // Add the value to the input option
 

@@ -148,12 +148,14 @@ export default class SimpleSelector {
       };
     }
 
-    console.log('this.optgroups: ', this.optgroups);
-
     // Remove the current options from the list
-    this.template.list.innerHTML = '';
-    // for (let i = 0; i < this.options.length; i++) {
-    // }
+    [...this.template.list.children].forEach((child) => {
+      // If this is not the search input
+      if (child !== this.template.search) {
+        // Remove the child
+        this.template.list.removeChild(child);
+      }
+    });
 
     // Reset the options
     this.options = [];
@@ -163,8 +165,6 @@ export default class SimpleSelector {
     for (let g = 0; g < Object.keys(this.optgroups).length; g++) {
       // Save the optgroup as a variable
       const optgroup = this.optgroups[g];
-
-      console.log('optgroup: ', optgroup);
 
       // If the group has a label
       if (optgroup.label) {
@@ -188,8 +188,6 @@ export default class SimpleSelector {
         const input = document.createElement('input');
         // Create a new label
         const label = document.createElement('label');
-
-        console.log('option: ', option);
 
         // Set the type based on the type of select
         input.type = (this.default.select.type == 'select-one') ? 'radio' : 'checkbox';
