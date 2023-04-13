@@ -221,5 +221,8 @@
       color $option-transition-speed ease,
       background-color $option-transition-speed ease;
 
+    &--hidden {
+      display: none;
+    }
   }
 }

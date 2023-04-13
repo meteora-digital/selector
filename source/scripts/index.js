@@ -1,4 +1,4 @@
-export default class SimpleSelector {
+export default class SimpleSelectorController {
   constructor(select, options = {}) {
     // The Simple Selector events will be store here
     this.events = {};
@@ -69,7 +69,7 @@ export default class SimpleSelector {
       // Put the search input into the select list
       this.template.list.appendChild(this.template.search);
       // When we type in the search input, we need to filter the options
-      this.template.search.addEventListener('keyup', () => this.filter(this.template.search.value));
+      this.template.search.addEventListener('input', () => this.filter(this.template.search.value));
     }
 
     // When the default select is changed, we want to update the Simple Selector
@@ -378,8 +378,8 @@ export default class SimpleSelector {
     this.select.classList.remove(`${this.settings.class}--active`);
 
     // Clear the search
-    if (this.search) {
-      this.search.value = '';
+    if (this.settings.search) {
+      this.template.search.value = '';
       this.filter();
     };
 
@@ -399,15 +399,18 @@ export default class SimpleSelector {
   filter(string = '') {
     // Loop through all the options
     this.options.forEach((option) => {
+      console.log(option);
       // If the option's text content matches our search query, or if the search query is empty
-      if (option.input.textContent.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
+      if (option.input.value.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
         // Remove the hidden class
-        option.input.classList.remove(`${this.settings.class}--hidden`);
+        option.field.classList.remove(`${this.settings.class}--hidden`);
+        option.input.disabled = false;
       }
       // Otherwise
       else {
         // Add a hidden class
-        option.input.classList.add(`${this.settings.class}--hidden`);
+        option.field.classList.add(`${this.settings.class}--hidden`);
+        option.input.disabled = true;
       }
     });
 

@@ -23,13 +23,13 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var SimpleSelector = /*#__PURE__*/function () {
-  function SimpleSelector(select) {
+var SimpleSelectorController = /*#__PURE__*/function () {
+  function SimpleSelectorController(select) {
     var _this = this;
 
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    _classCallCheck(this, SimpleSelector);
+    _classCallCheck(this, SimpleSelectorController);
 
     // The Simple Selector events will be store here
     this.events = {}; // The selected option values will go here
@@ -92,7 +92,7 @@ var SimpleSelector = /*#__PURE__*/function () {
 
       this.template.list.appendChild(this.template.search); // When we type in the search input, we need to filter the options
 
-      this.template.search.addEventListener('keyup', function () {
+      this.template.search.addEventListener('input', function () {
         return _this.filter(_this.template.search.value);
       });
     } // When the default select is changed, we want to update the Simple Selector
@@ -139,7 +139,7 @@ var SimpleSelector = /*#__PURE__*/function () {
     this.update();
   }
 
-  _createClass(SimpleSelector, [{
+  _createClass(SimpleSelectorController, [{
     key: "reinit",
     value: function reinit() {
       var _this2 = this;
@@ -401,8 +401,8 @@ var SimpleSelector = /*#__PURE__*/function () {
       // Remove the active state
       this.select.classList.remove("".concat(this.settings["class"], "--active")); // Clear the search
 
-      if (this.search) {
-        this.search.value = '';
+      if (this.settings.search) {
+        this.template.search.value = '';
         this.filter();
       }
 
@@ -427,14 +427,17 @@ var SimpleSelector = /*#__PURE__*/function () {
       var string = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
       // Loop through all the options
       this.options.forEach(function (option) {
-        // If the option's text content matches our search query, or if the search query is empty
-        if (option.input.textContent.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
+        console.log(option); // If the option's text content matches our search query, or if the search query is empty
+
+        if (option.input.value.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
           // Remove the hidden class
-          option.input.classList.remove("".concat(_this4.settings["class"], "--hidden"));
+          option.field.classList.remove("".concat(_this4.settings["class"], "--hidden"));
+          option.input.disabled = false;
         } // Otherwise
         else {
             // Add a hidden class
-            option.input.classList.add("".concat(_this4.settings["class"], "--hidden"));
+            option.field.classList.add("".concat(_this4.settings["class"], "--hidden"));
+            option.input.disabled = true;
           }
       }); // Run the filter callback
 
@@ -461,7 +464,7 @@ var SimpleSelector = /*#__PURE__*/function () {
     }
   }]);
 
-  return SimpleSelector;
+  return SimpleSelectorController;
 }();
 
-exports["default"] = SimpleSelector;
+exports["default"] = SimpleSelectorController;
