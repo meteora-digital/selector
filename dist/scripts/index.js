@@ -349,6 +349,15 @@ var SimpleSelectorController = /*#__PURE__*/function () {
         } else {
           // Deactivate the input
           option.input.checked = false;
+        } // If the option is disabled
+
+
+        if (option.disabled) {
+          // Disable the input
+          option.input.disabled = true;
+        } else {
+          // Enable the input
+          option.input.disabled = false;
         }
       } // Set the placeholder text
 
