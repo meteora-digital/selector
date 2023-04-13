@@ -403,13 +403,13 @@ export default class SimpleSelectorController {
       // If the option's text content matches our search query, or if the search query is empty
       if (option.input.value.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
         // Remove the hidden class
-        option.field.classList.remove(`${this.settings.class}--hidden`);
+        option.field.classList.remove(`${this.settings.class}__item--hidden`);
         option.input.disabled = false;
       }
       // Otherwise
       else {
         // Add a hidden class
-        option.field.classList.add(`${this.settings.class}--hidden`);
+        option.field.classList.add(`${this.settings.class}__item--hidden`);
         option.input.disabled = true;
       }
     });

@@ -431,12 +431,12 @@ var SimpleSelectorController = /*#__PURE__*/function () {
 
         if (option.input.value.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
           // Remove the hidden class
-          option.field.classList.remove("".concat(_this4.settings["class"], "--hidden"));
+          option.field.classList.remove("".concat(_this4.settings["class"], "__item--hidden"));
           option.input.disabled = false;
         } // Otherwise
         else {
             // Add a hidden class
-            option.field.classList.add("".concat(_this4.settings["class"], "--hidden"));
+            option.field.classList.add("".concat(_this4.settings["class"], "__item--hidden"));
             option.input.disabled = true;
           }
       }); // Run the filter callback

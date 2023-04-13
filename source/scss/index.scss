@@ -143,6 +143,10 @@
   &__item {
     position: relative;
 
+    &--hidden {
+      display: none;
+    }
+
     input[type="radio"],
     input[type="checkbox"] {
       position: absolute;
@@ -220,9 +224,5 @@
     transition: 
       color $option-transition-speed ease,
       background-color $option-transition-speed ease;
-
-    &--hidden {
-      display: none;
-    }
   }
 }
