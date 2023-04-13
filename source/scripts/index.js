@@ -283,11 +283,8 @@ export default class SimpleSelectorController {
             }
           });
 
-          // When we click the label we want something to happen
-          optionObj.label.addEventListener('click', () => {
-            console.log(optionObj);
-            this.close();
-          });
+          // When we click the label we want to close the select
+          optionObj.label.addEventListener('click', () => this.close());
         }
 
         // Add the new option element to the template object and list element
@@ -330,14 +327,8 @@ export default class SimpleSelectorController {
         option.input.checked = false;
       }
 
-      // If the option is disabled
-      if (option.default.disabled) {
-        // Disable the input
-        option.input.disabled = true;
-      } else {
-        // Enable the input
-        option.input.disabled = false;
-      }
+      // If the default option is disabled, disable the input
+      option.disabled = option.default.disabled;
     }
 
     // Set the placeholder text

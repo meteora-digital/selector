@@ -300,12 +300,10 @@ var SimpleSelectorController = /*#__PURE__*/function () {
                 // Close the select
                 _this2.close();
               }
-            }); // When we click the label we want something to happen
+            }); // When we click the label we want to close the select
 
             optionObj.label.addEventListener('click', function () {
-              console.log(optionObj);
-
-              _this2.close();
+              return _this2.close();
             });
           } // Add the new option element to the template object and list element
 
@@ -349,16 +347,10 @@ var SimpleSelectorController = /*#__PURE__*/function () {
         } else {
           // Deactivate the input
           option.input.checked = false;
-        } // If the option is disabled
+        } // If the default option is disabled, disable the input
 
 
-        if (option["default"].disabled) {
-          // Disable the input
-          option.input.disabled = true;
-        } else {
-          // Enable the input
-          option.input.disabled = false;
-        }
+        option.disabled = option["default"].disabled;
       } // Set the placeholder text
 
 
