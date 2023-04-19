@@ -357,6 +357,9 @@ export default class SimpleSelectorController {
   }
 
   open() {
+    // If the select is already open, do nothing
+    if (this.active) return;
+
     // Keep the select enabled
     clearTimeout(this.disable);
 
@@ -383,6 +386,9 @@ export default class SimpleSelectorController {
   }
 
   close() {
+    // If the select is already closed, do nothing
+    if (!this.active) return;
+
     // Remove the active state
     this.select.classList.remove(`${this.settings.class}--active`);
 

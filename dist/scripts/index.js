@@ -382,7 +382,9 @@ var SimpleSelectorController = /*#__PURE__*/function () {
   }, {
     key: "open",
     value: function open() {
-      // Keep the select enabled
+      // If the select is already open, do nothing
+      if (this.active) return; // Keep the select enabled
+
       clearTimeout(this.disable); // Scroll the list to the top
 
       this.template.list.scrollTop = 0; // Add the active state
@@ -408,7 +410,9 @@ var SimpleSelectorController = /*#__PURE__*/function () {
     value: function close() {
       var _this3 = this;
 
-      // Remove the active state
+      // If the select is already closed, do nothing
+      if (!this.active) return; // Remove the active state
+
       this.select.classList.remove("".concat(this.settings["class"], "--active")); // Clear the search
 
       if (this.settings.search) {
