@@ -373,7 +373,10 @@ export default class SimpleSelectorController {
     this.active = true;
 
     // Enable all allowed inputs
-    this.options.forEach((option) => option.input.disabled = option.disabled);
+    this.options.forEach((option) => {
+      option.input.disabled = option.disabled;
+      option.field.classList.toggle(`${this.settings.class}__item--disabled`, option.disabled);
+    });
 
     // Find the enabled inputs
     const enabled = this.options.filter((option) => option.disabled == false);

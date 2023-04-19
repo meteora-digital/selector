@@ -382,6 +382,8 @@ var SimpleSelectorController = /*#__PURE__*/function () {
   }, {
     key: "open",
     value: function open() {
+      var _this3 = this;
+
       // If the select is already open, do nothing
       if (this.active) return; // Keep the select enabled
 
@@ -394,7 +396,8 @@ var SimpleSelectorController = /*#__PURE__*/function () {
       this.active = true; // Enable all allowed inputs
 
       this.options.forEach(function (option) {
-        return option.input.disabled = option.disabled;
+        option.input.disabled = option.disabled;
+        option.field.classList.toggle("".concat(_this3.settings["class"], "__item--disabled"), option.disabled);
       }); // Find the enabled inputs
 
       var enabled = this.options.filter(function (option) {
@@ -408,7 +411,7 @@ var SimpleSelectorController = /*#__PURE__*/function () {
   }, {
     key: "close",
     value: function close() {
-      var _this3 = this;
+      var _this4 = this;
 
       // If the select is already closed, do nothing
       if (!this.active) return; // Remove the active state
@@ -425,7 +428,7 @@ var SimpleSelectorController = /*#__PURE__*/function () {
       this.active = false; // Disable all the inputs
 
       this.disable = setTimeout(function () {
-        _this3.options.forEach(function (option) {
+        _this4.options.forEach(function (option) {
           return option.input.disabled = true;
         });
       }, 100); // Run the close callback
@@ -436,7 +439,7 @@ var SimpleSelectorController = /*#__PURE__*/function () {
   }, {
     key: "filter",
     value: function filter() {
-      var _this4 = this;
+      var _this5 = this;
 
       var string = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
       // Loop through all the options
@@ -444,12 +447,12 @@ var SimpleSelectorController = /*#__PURE__*/function () {
         // If the option's text content matches our search query, or if the search query is empty
         if (option.input.value.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
           // Remove the hidden class
-          option.field.classList.remove("".concat(_this4.settings["class"], "__item--hidden"));
+          option.field.classList.remove("".concat(_this5.settings["class"], "__item--hidden"));
           option.input.disabled = false;
         } // Otherwise
         else {
             // Add a hidden class
-            option.field.classList.add("".concat(_this4.settings["class"], "__item--hidden"));
+            option.field.classList.add("".concat(_this5.settings["class"], "__item--hidden"));
             option.input.disabled = true;
           }
       }); // Run the filter callback
