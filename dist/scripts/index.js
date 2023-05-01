@@ -330,7 +330,9 @@ var SimpleSelectorController = /*#__PURE__*/function () {
     key: "update",
     value: function update() {
       // Reset our selection
-      this.selection = []; // Loop all the options and do something with the selected options
+      this.selection = []; // Check if the select is disabled
+
+      this.select.classList.toggle("".concat(this.settings["class"], "--disabled"), this["default"].select.disabled); // Loop all the options and do something with the selected options
 
       for (var i = 0; i < this.options.length; i++) {
         // Save this as an option
@@ -385,7 +387,9 @@ var SimpleSelectorController = /*#__PURE__*/function () {
       var _this3 = this;
 
       // If the select is already open, do nothing
-      if (this.active) return; // Keep the select enabled
+      if (this.active) return; // If the select is disabled, do nothing
+
+      if (this["default"].select.disabled) return; // Keep the select enabled
 
       clearTimeout(this.disable); // Scroll the list to the top
 
