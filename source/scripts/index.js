@@ -115,6 +115,19 @@ export default class SimpleSelectorController {
     // Initialise the selector
     this.reinit();
     this.update();
+
+    // If the default select changes, we need to reinit the selector
+    const Observer = new MutationObserver(() => {
+      this.reinit();
+      this.update();
+    });
+
+    // Observe the default select element for changes
+    Observer.observe(this.default.select, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+    });
   }
 
   reinit() {

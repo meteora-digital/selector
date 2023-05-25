@@ -136,7 +136,19 @@ var SimpleSelectorController = /*#__PURE__*/function () {
     this["default"].select.parentNode.insertBefore(this.select, this["default"].select); // Initialise the selector
 
     this.reinit();
-    this.update();
+    this.update(); // If the default select changes, we need to reinit the selector
+
+    var Observer = new MutationObserver(function () {
+      _this.reinit();
+
+      _this.update();
+    }); // Observe the default select element for changes
+
+    Observer.observe(this["default"].select, {
+      childList: true,
+      subtree: true,
+      attributes: true
+    });
   }
 
   _createClass(SimpleSelectorController, [{
