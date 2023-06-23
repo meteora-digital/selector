@@ -49,6 +49,7 @@ export default class SimpleSelectorController {
 
     // Add a class to the new select
     this.select.className = this.settings.class;
+    this.select.id = this.id;
 
     // Loop the template object and add some classes
     for (let name in this.template) {

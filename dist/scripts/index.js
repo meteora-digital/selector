@@ -73,7 +73,8 @@ var SimpleSelectorController = /*#__PURE__*/function () {
       search: document.createElement('input')
     }; // Add a class to the new select
 
-    this.select.className = this.settings["class"]; // Loop the template object and add some classes
+    this.select.className = this.settings["class"];
+    this.select.id = this.id; // Loop the template object and add some classes
 
     for (var name in this.template) {
       if (this.template.hasOwnProperty(name)) this.template[name].className = "".concat(this.settings["class"], "__").concat(name);
