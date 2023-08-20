@@ -8,6 +8,8 @@ export default class SimpleSelectorController {
     this.active = false;
     // Disable all inputs to keep form submissions clean
     this.disable = null;
+    // If the select sits inside a form, find it
+    this.form = (select.form) ? select.form : false;
 
     // The default select element
     this.default = {
@@ -75,6 +77,16 @@ export default class SimpleSelectorController {
 
     // When the default select is changed, we want to update the Simple Selector
     this.default.select.addEventListener('change', () => this.update());
+
+    // If there is a form
+    if (this.form) {
+      // When the form is reset, we want to update the Simple Selector
+      this.form.addEventListener('reset', () => {
+        setTimeout(() => {
+          this.update();
+        }, 100);
+      });
+    }
 
     // Make the header Tab Accessible
     this.template.header.setAttribute('tabindex', "0");

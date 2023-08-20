@@ -38,7 +38,9 @@ var SimpleSelectorController = /*#__PURE__*/function () {
 
     this.active = false; // Disable all inputs to keep form submissions clean
 
-    this.disable = null; // The default select element
+    this.disable = null; // If the select sits inside a form, find it
+
+    this.form = select.form ? select.form : false; // The default select element
 
     this["default"] = {
       select: select,
@@ -101,7 +103,17 @@ var SimpleSelectorController = /*#__PURE__*/function () {
 
     this["default"].select.addEventListener('change', function () {
       return _this.update();
-    }); // Make the header Tab Accessible
+    }); // If there is a form
+
+    if (this.form) {
+      // When the form is reset, we want to update the Simple Selector
+      this.form.addEventListener('reset', function () {
+        setTimeout(function () {
+          _this.update();
+        }, 100);
+      });
+    } // Make the header Tab Accessible
+
 
     this.template.header.setAttribute('tabindex', "0"); // If we want it to auto close
 
