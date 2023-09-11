@@ -171,11 +171,11 @@ var SimpleSelectorController = /*#__PURE__*/function () {
 
       try {
         // This will be used to trigger a change event on the real select element
-        this.change = new Event('change');
+        this.changeEvent = new Event('change');
       } catch (err) {
         var event = document.createEvent('CustomEvent');
         event.initCustomEvent('change', false, false, undefined);
-        this.change = event;
+        this.changeEvent = event;
       } // Find all the optgroups in the real select element
 
 
@@ -313,7 +313,7 @@ var SimpleSelectorController = /*#__PURE__*/function () {
               } // Trigger the change event on the default select
 
 
-            _this2["default"].select.dispatchEvent(_this2.change);
+            _this2["default"].select.dispatchEvent(_this2.changeEvent);
           }); // If we want it to autoClose and it is not a multi select, then close after selecting an option
 
           if (_this2["default"].select.type == 'select-one' && _this2.settings.autoClose) {
@@ -407,6 +407,12 @@ var SimpleSelectorController = /*#__PURE__*/function () {
       this.callback('update', this);
     }
   }, {
+    key: "change",
+    value: function change() {
+      // Run the change callback
+      this.callback('change', this.selection);
+    }
+  }, {
     key: "open",
     value: function open() {
       var _this3 = this;
@@ -474,7 +480,7 @@ var SimpleSelectorController = /*#__PURE__*/function () {
       // Loop through all the options
       this.options.forEach(function (option) {
         // If the option's text content matches our search query, or if the search query is empty
-        if (option.input.value.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
+        if (option.label.innerText.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
           // Remove the hidden class
           option.field.classList.remove("".concat(_this5.settings["class"], "__item--hidden"));
           option.input.disabled = false;

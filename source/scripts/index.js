@@ -146,11 +146,11 @@ export default class SimpleSelectorController {
   reinit() {
     try {
       // This will be used to trigger a change event on the real select element
-      this.change = new Event('change');
+      this.changeEvent = new Event('change');
     } catch (err) {
       let event = document.createEvent('CustomEvent');
       event.initCustomEvent('change', false, false, undefined);
-      this.change = event;
+      this.changeEvent = event;
     }
 
     // Find all the optgroups in the real select element
@@ -294,7 +294,7 @@ export default class SimpleSelectorController {
           }
 
           // Trigger the change event on the default select
-          this.default.select.dispatchEvent(this.change);
+          this.default.select.dispatchEvent(this.changeEvent);
         });
 
         // If we want it to autoClose and it is not a multi select, then close after selecting an option
@@ -384,6 +384,11 @@ export default class SimpleSelectorController {
     this.callback('update', this);
   }
 
+  change() {
+    // Run the change callback
+    this.callback('change', this.selection);
+  }
+
   open() {
     // If the select is already open, do nothing
     if (this.active) return;
@@ -449,7 +454,7 @@ export default class SimpleSelectorController {
     // Loop through all the options
     this.options.forEach((option) => {
       // If the option's text content matches our search query, or if the search query is empty
-      if (option.input.value.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
+      if (option.label.innerText.toLowerCase().indexOf(string.toLowerCase()) > -1 || string.length === 0) {
         // Remove the hidden class
         option.field.classList.remove(`${this.settings.class}__item--hidden`);
         option.input.disabled = false;
