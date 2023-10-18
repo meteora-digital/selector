@@ -223,7 +223,7 @@ export default class SimpleSelectorController {
         // Add the value to the input option
         input.value = option.value;
         // The input name
-        input.name = (this.settings.originalNames) ? this.default.name : this.id;
+        input.name = (this.settings.originalNames) ? this.default.select.name : this.id;
         // The input ID
         input.id = `${this.id}_${index}`;
 

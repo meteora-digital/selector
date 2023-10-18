@@ -244,7 +244,7 @@ var SimpleSelectorController = /*#__PURE__*/function () {
 
           input.value = option.value; // The input name
 
-          input.name = _this2.settings.originalNames ? _this2["default"].name : _this2.id; // The input ID
+          input.name = _this2.settings.originalNames ? _this2["default"].select.name : _this2.id; // The input ID
 
           input.id = "".concat(_this2.id, "_").concat(index); // Get the content of the real option and chuck it into the label
 
