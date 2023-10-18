@@ -25,6 +25,7 @@ export default class SimpleSelectorController {
       search: false,
       autoClose: true,
       class: 'selector',
+      originalNames: false,
       placeholder: this.default.select.getAttribute('placeholder') || 'Select',
     }
 
@@ -222,7 +223,7 @@ export default class SimpleSelectorController {
         // Add the value to the input option
         input.value = option.value;
         // The input name
-        input.name = this.id;
+        input.name = (this.settings.originalNames) ? this.default.name : this.id;
         // The input ID
         input.id = `${this.id}_${index}`;
 
