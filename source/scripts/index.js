@@ -369,7 +369,7 @@ export default class SimpleSelectorController {
         break;
       case 1:
         // we have one option selected so set the to match the selected option's text
-        this.template.placeholder.innerHTML = this.selection[0].label.textContent;
+        this.template.placeholder.innerHTML = this.selection[0].label.innerHTML;
         this.template.placeholder.classList.add(`${this.settings.class}__placeholder--single`);
         this.template.placeholder.classList.remove(`${this.settings.class}__placeholder--multiple`);
         break;
