@@ -296,17 +296,9 @@ export default class SimpleSelectorController {
 
           // Trigger the change event on the default select
           this.default.select.dispatchEvent(this.changeEvent);
+          // Trigger the change event on the Simple Selector
+          this.change();
         });
-
-        // If we press enter on an input
-        optionObj.input.addEventListener('keypress', (e) => {
-          e.preventDefault();
-          // If we press enter or escape
-          if (e.key == 'Enter') this.change();
-        });
-
-        // When we click the label we want to close the select
-        optionObj.label.addEventListener('click', () => this.change());
 
         // If we want it to autoClose and it is not a multi select, then close after selecting an option
         if (this.default.select.type == 'select-one' && this.settings.autoClose) {
