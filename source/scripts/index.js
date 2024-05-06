@@ -298,6 +298,16 @@ export default class SimpleSelectorController {
           this.default.select.dispatchEvent(this.changeEvent);
         });
 
+        // If we press enter on an input
+        optionObj.input.addEventListener('keypress', (e) => {
+          e.preventDefault();
+          // If we press enter or escape
+          if (e.key == 'Enter') this.change();
+        });
+
+        // When we click the label we want to close the select
+        optionObj.label.addEventListener('click', () => this.change());
+
         // If we want it to autoClose and it is not a multi select, then close after selecting an option
         if (this.default.select.type == 'select-one' && this.settings.autoClose) {
           // If we press enter on an input
@@ -311,7 +321,9 @@ export default class SimpleSelectorController {
           });
 
           // When we click the label we want to close the select
-          optionObj.label.addEventListener('click', () => this.close());
+          optionObj.label.addEventListener('click', () => {
+            this.close();
+          });
         }
 
         // Add the new option element to the template object and list element
