@@ -2,7 +2,7 @@
 // function to return parent class ======
 // ======================================
 
-@function simple-selector-scope {
+@function SimpleSelectorScope() {
   $classlist: "#{&}";
   $split-arr: ();
   $index : str-index($classlist, " ");
@@ -48,7 +48,7 @@
   $option-background-color--hover: rgba(#000, .1),
   $option-background-color--active: rgba(#000, .6),
   ) {
-  $parent: simple-selector-scope();
+  $parent: SimpleSelectorScope();
   position: relative;
   z-index: 100;
   display: block;
@@ -137,6 +137,7 @@
     max-height: 400px;
     overflow: auto;
     z-index: 150;
+    overscroll-behavior: contain;
   }
 
   &__item {
