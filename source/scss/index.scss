@@ -227,37 +227,14 @@
   }
 }
 
-@mixin noui-selector ($min-width: 320px,
-  $border-radius: 0,
-  $border-width: 1px,
-  $header-color: #000,
-  $header-border-color: rgba(#000, .2),
-  $header-background-color: #fff,
-  $header-padding: 10px 40px 10px 20px,
-  $chevron-color: #000,
-  $list-border-color: rgba(#000, .2),
-  $list-background-color: #fff,
-  $list-padding: 0,
-  $search-color: #000,
-  $search-border-color: rgba(#000, .2),
-  $search-background-color: #fff,
-  $group-color: #000,
-  $group-background-color: #fff,
-  $option-color: #000,
-  $option-background-color: #fff,
-  $option-transition-speed: 0.3s,
-  $option-color--hover: #000,
-  $option-color--active: #fff,
-  $option-background-color--hover: rgba(#000, .1),
-  $option-background-color--active: rgba(#000, .6),
-) {
+@mixin noui-selector () {
   $parent: SimpleSelectorScope();
   position: relative;
   z-index: 100;
   display: block;
   transition: z-index .3s ease;
 
-  + select {
+  +select {
     display: none;
   }
 
@@ -278,7 +255,13 @@
   }
 
   &__placeholder {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
     user-select: none;
+    margin-bottom: 0;
   }
 
   &__search {
@@ -323,7 +306,7 @@
       margin: 0;
 
       &[disabled] {
-        + #{$parent} {
+        +#{$parent} {
           &__option {
             pointer-events: none;
           }
@@ -339,5 +322,21 @@
     user-select: none;
     color: inherit;
     z-index: 1;
+  }
+
+  &__tag {
+    display: block;
+  }
+
+  &__tag-text,
+  &__tag-remove {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 0;
+  }
+
+  &__tag-remove {
+    cursor: pointer;
+    margin-left: 0.5em;
   }
 }

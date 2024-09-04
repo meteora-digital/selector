@@ -43,6 +43,7 @@ const Selector = new SimpleSelector(select, {
 | class | String (default: 'selector') | If you want more than one style of selector, you can change this class to suit your needs |
 | placeholder | String (default: placeholder attribute or 'Select') | Will update the default text on the Simple Selector |
 | autoClose | Boolean (default: true) | When multiple is false, autoClose: true will close the Selector when an option is clicked |
+| taglist | Boolean (default: false) | When multiple is true, taglist: true will display the selected options as tags in the select header |
 
 # Methods
 
@@ -127,4 +128,3 @@ Chrome Mobile 47+ ✓
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
-

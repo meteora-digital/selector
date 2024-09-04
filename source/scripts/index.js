@@ -26,6 +26,7 @@ export default class SimpleSelectorController {
       autoClose: true,
       class: 'selector',
       originalNames: false,
+      taglist: false,
       placeholder: this.default.select.getAttribute('placeholder') || 'Select',
     }
 
@@ -111,6 +112,8 @@ export default class SimpleSelectorController {
 
     // Clicking the header should open / close the select list
     this.template.header.addEventListener('click', (e) => {
+      if (e.target.tagName == 'BUTTON') return;
+
       e.preventDefault();
       (this.active) ? this.close() : this.open();
     });
@@ -364,25 +367,71 @@ export default class SimpleSelectorController {
       option.disabled = option.default.disabled;
     }
 
-    // Set the placeholder text
-    switch (this.selection.length) {
-      case 0:
-        // We have nothing selected so set the placeholder back to the default value
-        this.template.placeholder.innerHTML = this.settings.placeholder;
-        this.template.placeholder.className = `${this.settings.class}__placeholder`;
-        break;
-      case 1:
-        // we have one option selected so set the to match the selected option's text
-        this.template.placeholder.innerHTML = this.selection[0].label.innerHTML;
-        this.template.placeholder.classList.add(`${this.settings.class}__placeholder--single`);
-        this.template.placeholder.classList.remove(`${this.settings.class}__placeholder--multiple`);
-        break;
-      default:
-        // Otherwise we have multiple selected
-        this.template.placeholder.innerHTML = 'Multiple Selected';
-        this.template.placeholder.classList.remove(`${this.settings.class}__placeholder--single`);
-        this.template.placeholder.classList.add(`${this.settings.class}__placeholder--multiple`);
-        break;
+    if (this.settings.taglist) {
+      // Reset the placeholder
+      this.template.placeholder.innerHTML = (this.selection.length) ? '' : this.settings.placeholder;
+      this.template.placeholder.className = `${this.settings.class}__placeholder`;
+
+      // Loop through all the selected options, and create a new label for each one
+      this.selection.forEach((option) => {
+        // Create a div to hold the tag
+        const tag = document.createElement('div');
+        // Create a span to hold the text
+        const text = document.createElement('div');
+        // Create a label to hold the close button
+        const remove = document.createElement('button');
+
+        // Add a class to the tag
+        tag.className = `${this.settings.class}__tag`;
+        // Add a class to the text
+        text.className = `${this.settings.class}__tag-text`;
+        // Add a class to the close button
+        remove.className = `${this.settings.class}__tag-remove`;
+
+        // Add the text to the tag
+        text.innerHTML = option.label.innerHTML;
+        // Add the close button to the tag
+        remove.innerHTML = '×';
+
+        // Append the text to the tag
+        tag.appendChild(text);
+        // Append the close button to the tag
+        tag.appendChild(remove);
+
+        remove.addEventListener('click', (e) => {
+          e.preventDefault();
+          // deselect the option from the default select
+          option.default.selected = false;
+          // trigger the change event on the default select
+          this.default.select.dispatchEvent(this.changeEvent);
+        });
+
+        // Append the tag to the placeholder
+        this.template.placeholder.appendChild(tag);
+      });
+    }
+
+    else {
+      // Set the placeholder text
+      switch (this.selection.length) {
+        case 0:
+          // We have nothing selected so set the placeholder back to the default value
+          this.template.placeholder.innerHTML = this.settings.placeholder;
+          this.template.placeholder.className = `${this.settings.class}__placeholder`;
+          break;
+        case 1:
+          // we have one option selected so set the to match the selected option's text
+          this.template.placeholder.innerHTML = this.selection[0].label.innerHTML;
+          this.template.placeholder.classList.add(`${this.settings.class}__placeholder--single`);
+          this.template.placeholder.classList.remove(`${this.settings.class}__placeholder--multiple`);
+          break;
+        default:
+          // Otherwise we have multiple selected
+          this.template.placeholder.innerHTML = 'Multiple Selected';
+          this.template.placeholder.classList.remove(`${this.settings.class}__placeholder--single`);
+          this.template.placeholder.classList.add(`${this.settings.class}__placeholder--multiple`);
+          break;
+      }
     }
 
     // Run the update callback
