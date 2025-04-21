@@ -240,7 +240,7 @@ export default class SimpleSelectorController {
         // Grab all the data attributes from the option and assign them to the new one
         for (let j = 0; j < option.attributes.length; j++) {
           // Save as an attribute
-          const attribute = option.attributes[i];
+          const attribute = option.attributes[j];
 
           // If it is a data attribute
           if (attribute && attribute.nodeName.indexOf('data-') == 0) {
