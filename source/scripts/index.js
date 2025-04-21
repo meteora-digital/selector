@@ -243,7 +243,7 @@ export default class SimpleSelectorController {
           const attribute = option.attributes[i];
 
           // If it is a data attribute
-          if (attribute && attribute.nodeName.indexOf('data-') == 1) {
+          if (attribute && attribute.nodeName.indexOf('data-') == 0) {
             // Add it to the new input option
             input.setAttribute(attribute.nodeName, attribute.nodeValue);
             label.setAttribute(attribute.nodeName, attribute.nodeValue);
