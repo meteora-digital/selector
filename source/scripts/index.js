@@ -413,6 +413,13 @@ export default class SimpleSelectorController {
     }
 
     else {
+      // Remove all the data attributes from the placeholder
+      [...this.template.placeholder.attributes].forEach((attribute) => {
+        if (attribute.nodeName.indexOf('data-') == 0) {
+          this.template.placeholder.removeAttribute(attribute.nodeName);
+        }
+      });
+
       // Set the placeholder text
       switch (this.selection.length) {
         case 0:
@@ -425,6 +432,14 @@ export default class SimpleSelectorController {
           this.template.placeholder.innerHTML = this.selection[0].label.innerHTML;
           this.template.placeholder.classList.add(`${this.settings.class}__placeholder--single`);
           this.template.placeholder.classList.remove(`${this.settings.class}__placeholder--multiple`);
+
+          // Add all the data attributes from the selected option to the placeholder
+          [...this.selection[0].default.attributes].forEach((attribute) => {
+            if (attribute.nodeName.indexOf('data-') == 0) {
+              this.template.placeholder.setAttribute(attribute.nodeName, attribute.nodeValue);
+            }
+          });
+
           break;
         default:
           // Otherwise we have multiple selected
