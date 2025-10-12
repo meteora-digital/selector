@@ -150,7 +150,7 @@ export default class SimpleSelectorController {
   reinit() {
     try {
       // This will be used to trigger a change event on the real select element
-      this.changeEvent = new Event('change');
+      this.changeEvent = new Event('change', { bubbles: true });
     } catch (err) {
       let event = document.createEvent('CustomEvent');
       event.initCustomEvent('change', false, false, undefined);
