@@ -46,6 +46,7 @@ export default class SimpleSelectorController {
     this.template = {
       header: document.createElement('div'),
       placeholder: document.createElement('span'),
+      reveal: document.createElement('div'),
       list: document.createElement('div'),
       options: [],
       search: document.createElement('input'),
@@ -62,8 +63,9 @@ export default class SimpleSelectorController {
 
     // Build the select html
     this.template.header.appendChild(this.template.placeholder);
+    this.template.reveal.appendChild(this.template.list);
     this.select.appendChild(this.template.header);
-    this.select.appendChild(this.template.list);
+    this.select.appendChild(this.template.reveal);
 
     // If we have search enabled
     if (this.settings.search) {

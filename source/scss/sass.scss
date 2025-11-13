@@ -7,27 +7,27 @@
 
 @function SimpleSelectorScope() {
   $classlist: "#{&}";
-  $split-arr: ();
+  $split-arr: (
+  );
+$index: string.index($classlist, " ");
+
+// loop through string
+@while $index !=null {
+  $item: string.slice($classlist, 1, $index - 1);
+  $split-arr: list.append($split-arr, $item);
+  $classlist: string.slice($classlist, $index + 1);
   $index: string.index($classlist, " ");
+}
 
-  // loop through string
-  @while $index != null {
-    $item: string.slice($classlist, 1, $index - 1);
-    $split-arr: list.append($split-arr, $item);
-    $classlist: string.slice($classlist, $index + 1);
-    $index: string.index($classlist, " ");
-  }
-
-  $split-arr: list.append($split-arr, $classlist);
-  @return list.nth($split-arr, list.length($split-arr));
+$split-arr: list.append($split-arr, $classlist);
+@return list.nth($split-arr, list.length($split-arr));
 }
 
 // ======================================
 // Styles ===============================
 // ======================================
 
-@mixin simple-selector (
-  $min-width: 320px,
+@mixin simple-selector ($min-width: 320px,
   $border-radius: 0,
   $border-width: 1px,
   $header-color: #000,
@@ -50,7 +50,7 @@
   $option-color--active: #fff,
   $option-background-color--hover: rgba(#000, .1),
   $option-background-color--active: rgba(#000, .6),
-  ) {
+) {
   $parent: SimpleSelectorScope();
   position: relative;
   z-index: 100;
@@ -58,7 +58,7 @@
   min-width: $min-width;
   transition: z-index .3s ease;
 
-  + select {
+  +select {
     display: none;
   }
 
@@ -68,6 +68,7 @@
     #{$parent} {
       &__header {
         border-radius: $border-radius $border-radius 0 0;
+
         &:before {
           transform: translate(50%, -30%) rotate(45deg) scale(-1);
         }
@@ -116,7 +117,7 @@
     margin-bottom: 0;
     border: 0;
     width: 100%;
-    padding: 10px 20px!important;
+    padding: 10px 20px !important;
     color: $search-color;
     border-color: $search-border-color;
     background-color: $search-background-color;
@@ -128,7 +129,7 @@
     top: 100%;
     left: 0;
     width: 100%;
-    padding: $list-padding!important;
+    padding: $list-padding !important;
     margin: 0;
     color: transparent;
     background-color: $list-background-color;
@@ -136,7 +137,6 @@
     border-top: none;
     transform: scaleY(0);
     transform-origin: 50% 0;
-    transition: transform .2s ease;
     max-height: 400px;
     overflow: auto;
     z-index: 150;
@@ -163,7 +163,7 @@
       margin: 0;
 
       &:not([disabled]) {
-        + #{$parent} {
+        +#{$parent} {
           &__option {
             cursor: pointer;
 
@@ -177,7 +177,7 @@
 
         &:hover,
         &:focus {
-          + #{$parent} {
+          +#{$parent} {
             &__option {
               color: $option-color--hover;
               background-color: $option-background-color--hover;
@@ -186,7 +186,7 @@
         }
 
         &:checked {
-          + #{$parent} {
+          +#{$parent} {
             &__option {
               color: $option-color--active;
               background-color: $option-background-color--active;
@@ -196,7 +196,7 @@
       }
 
       &[disabled] {
-        + #{$parent} {
+        +#{$parent} {
           &__option {
             opacity: .3;
           }
@@ -207,12 +207,12 @@
 
   &__group,
   &__option {
-    display: block!important;
+    display: block !important;
     position: relative;
     z-index: 1;
     user-select: none;
-    padding: 10px 20px!important;
-    margin-bottom: 0!important;
+    padding: 10px 20px !important;
+    margin-bottom: 0 !important;
     color: inherit;
   }
 
@@ -232,6 +232,9 @@
 
 @mixin noui-selector () {
   $parent: SimpleSelectorScope();
+
+  --_reveal-height: 0fr;
+
   position: relative;
   z-index: 100;
   display: block;
@@ -242,13 +245,8 @@
   }
 
   &--active {
+    --_reveal-height: 1fr;
     z-index: 150;
-
-    #{$parent} {
-      &__list {
-        transform: scaleY(1);
-      }
-    }
   }
 
   &__header {
@@ -274,18 +272,22 @@
     margin-bottom: 0;
   }
 
+  &__reveal {
+    display: grid;
+    position: absolute;
+    margin: 0;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    grid-template-rows: var(--_reveal-height, 0fr);
+    transition: grid-template-rows var(--_reveal-duration, .2s) ease;
+  }
+
   &__list {
     display: block;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    margin: 0;
-    transform: scaleY(0);
-    transform-origin: 50% 0;
-    transition: transform .2s ease;
     overflow: auto;
     z-index: 150;
+    max-height: var(--_list-max-height, 400px);
     overscroll-behavior: contain;
   }
 
